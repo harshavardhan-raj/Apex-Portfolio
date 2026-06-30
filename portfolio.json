@@ -1,0 +1,8 @@
+{
+  "cashBalance": 150000.0000,
+  "holdings": [
+    {"symbol": "MSFT", "quantity": 8.0000, "averageBuyPrice": 372.9700},
+    {"symbol": "AAPL", "quantity": 10.0000, "averageBuyPrice": 185.0000},
+    {"symbol": "TSLA", "quantity": 5.0000, "averageBuyPrice": 220.0000}
+  ]
+}
