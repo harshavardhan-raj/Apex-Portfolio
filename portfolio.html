@@ -36,6 +36,47 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.12) rgba(13, 18, 30, 0.3);
+        }
+
+        /* --- CUSTOM ELEGANT SCROLLBARS --- */
+        /* Webkit browsers (Chrome, Safari, Edge, Opera) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(13, 18, 30, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(95, 90, 246, 0.45); /* Accented glow on hover */
+        }
+
+        /* Scrollbar styles specific to dropdown overlays to keep them extremely neat */
+        .currency-pill-dropdown::-webkit-scrollbar,
+        .custom-select-options::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .currency-pill-dropdown::-webkit-scrollbar-thumb,
+        .custom-select-options::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .currency-pill-dropdown::-webkit-scrollbar-thumb:hover,
+        .custom-select-options::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
 
         body {
@@ -730,6 +771,7 @@
             height: 100%;
             background: rgba(8, 12, 20, 0.85);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -864,9 +906,742 @@
         .toast-success { border-left: 3px solid var(--success); }
         .toast-error { border-left: 3px solid var(--danger); }
         .toast-info { border-left: 3px solid var(--accent); }
+
+        /* Timeframe Buttons Styling */
+        .timeframe-btn:hover {
+            color: var(--text-primary) !important;
+            background: rgba(255, 255, 255, 0.04) !important;
+        }
+        .timeframe-btn.active {
+            background: var(--accent) !important;
+            color: white !important;
+            box-shadow: 0 2px 8px var(--accent-glow) !important;
+        }
+
+        /* Ticker Tape Styling */
+        .ticker-tape-container {
+            width: 100%;
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            height: 40px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .ticker-tape-wrapper {
+            display: flex;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .ticker-track {
+            display: flex;
+            align-items: center;
+            animation: scroll-ticker 35s linear infinite;
+            width: max-content;
+        }
+
+        .ticker-tape-container:hover .ticker-track {
+            animation-play-state: paused;
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 28px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .ticker-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .ticker-item .ticker-name {
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .ticker-item .ticker-price {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .ticker-item .ticker-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        @keyframes scroll-ticker {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .custom-coin-cursor {
+            position: fixed;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #EF9F27;
+            border: 2px solid #BA7517;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            display: none; /* JS will show this on mousemove */
+        }
+        
+        body, a, button, input, select, textarea, .glass-panel, .card, .modal-overlay, .modal, .modal-header, .modal-body, .modal-footer, .form-input, .form-label {
+            cursor: none !important;
+        }
+
+        /* --- CURRENCY SELECTOR PILL --- */
+        .currency-pill {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            z-index: 991;
+        }
+
+        .currency-pill-trigger {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid var(--panel-border);
+            border-radius: 50px;
+            padding: 5px 12px 5px 8px;
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: none !important;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .currency-pill-trigger:hover {
+            background: rgba(95, 90, 246, 0.08);
+            border-color: rgba(95, 90, 246, 0.4);
+            box-shadow: 0 0 10px rgba(95, 90, 246, 0.1);
+        }
+
+        .currency-pill-trigger .currency-flag {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+            background: rgba(95, 90, 246, 0.2);
+            border: 1px solid rgba(95, 90, 246, 0.3);
+            color: var(--accent);
+        }
+
+        .currency-pill-trigger .chevron-icon {
+            font-size: 9px;
+            margin-left: 2px;
+            transition: transform 0.2s ease;
+        }
+
+        .currency-pill.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .currency-pill-dropdown {
+            position: absolute;
+            top: 115%;
+            right: 0;
+            min-width: 180px;
+            background: rgba(13, 18, 30, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            padding: 6px 0;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        .currency-pill.open .currency-pill-dropdown {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .currency-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: none !important;
+            transition: all 0.15s ease;
+        }
+
+        .currency-option:hover {
+            background: rgba(95, 90, 246, 0.15);
+            color: #fff;
+        }
+
+        .currency-option.active {
+            background: rgba(95, 90, 246, 0.25);
+            color: var(--accent);
+        }
+
+        .currency-option .cur-symbol {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .currency-option .cur-label {
+            flex: 1;
+        }
+
+        .currency-option .cur-code {
+            font-size: 10px;
+            opacity: 0.5;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- ANTI-GRAVITY REDESIGN & PARTICLES --- */
+        .particles-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .drift-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: drift-up-particle 12s linear infinite;
+        }
+
+        @keyframes drift-up-particle {
+            0% {
+                transform: translateY(120%) scale(0);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.45;
+            }
+            85% {
+                opacity: 0.45;
+            }
+            100% {
+                transform: translateY(-20%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Float Bobbing Card Container */
+        .floating-card-container {
+            animation: float-bobbing-card 3.5s ease-in-out infinite;
+            border: 1px solid rgba(95, 90, 246, 0.2);
+            transition: border-color 0.5s ease, box-shadow 0.5s ease;
+            position: relative;
+            z-index: 1;
+            background: rgba(13, 18, 30, 0.85) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .floating-card-container.btn-hovered {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+            border-color: rgba(95, 90, 246, 0.4) !important;
+        }
+
+        @keyframes float-bobbing-card {
+            0%, 100% {
+                transform: translateY(0);
+                border-color: rgba(95, 90, 246, 0.2);
+            }
+            50% {
+                transform: translateY(-12px);
+                border-color: rgba(6, 182, 212, 0.7);
+            }
+        }
+
+        /* Orbit + Button Area */
+        .orbit-button-area {
+            position: relative;
+            height: 120px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            z-index: 5;
+        }
+
+        .orbiting-coin {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .coin-gold {
+            background-color: #ef9f27;
+            border: 1.5px solid #ba7517;
+            animation: orbit-coin-gold 4s linear infinite;
+        }
+
+        .coin-teal {
+            background-color: #14b8a6;
+            border: 1.5px solid #0f766e;
+            animation: orbit-coin-teal 5s linear infinite;
+            animation-delay: -1.6s;
+        }
+
+        .coin-purple {
+            background-color: #a855f7;
+            border: 1.5px solid #7e22ce;
+            animation: orbit-coin-purple 6s linear infinite;
+            animation-delay: -3.2s;
+        }
+
+        @keyframes orbit-coin-gold {
+            from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+        }
+
+        @keyframes orbit-coin-teal {
+            from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+        }
+
+        @keyframes orbit-coin-purple {
+            from { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+        }
+
+        /* --- HEADER ORBIT REDESIGN --- */
+        .header-orbit-area {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            margin-left: 20px;
+            margin-right: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .header-orbit-area.btn-hovered {
+            filter: drop-shadow(0 0 6px rgba(95, 90, 246, 0.15));
+        }
+        
+        .header-orbiting-coin {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8.5px;
+            font-weight: 800;
+            color: #ffffff;
+            pointer-events: none;
+            box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-coin-gold {
+            background-color: #ef9f27;
+            border: 1.2px solid #ba7517;
+            animation: header-orbit-gold 4s linear infinite;
+        }
+
+        .header-coin-teal {
+            background-color: #14b8a6;
+            border: 1.2px solid #0f766e;
+            animation: header-orbit-teal 5s linear infinite;
+            animation-delay: -1.6s;
+        }
+
+        .header-coin-purple {
+            background-color: #a855f7;
+            border: 1.2px solid #7e22ce;
+            animation: header-orbit-purple 6s linear infinite;
+            animation-delay: -3.2s;
+        }
+
+        @keyframes header-orbit-gold {
+            from { transform: rotate(0deg) translateX(65px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(65px) rotate(-360deg); }
+        }
+
+        @keyframes header-orbit-teal {
+            from { transform: rotate(0deg) translateX(65px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(65px) rotate(-360deg); }
+        }
+
+        @keyframes header-orbit-purple {
+            from { transform: rotate(0deg) translateX(65px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(65px) rotate(-360deg); }
+        }
+
+        /* Bobbing Redesigned Button */
+        #btn-quick-buy-wrap {
+            position: relative;
+            z-index: 10;
+        }
+
+        .bobbing-buy-btn {
+            background: #5f5af6 !important;
+            color: white !important;
+            border-radius: 30px !important;
+            padding: 10px 24px !important;
+            font-weight: 700 !important;
+            letter-spacing: 1px !important;
+            text-transform: uppercase !important;
+            box-shadow: 0 4px 15px rgba(95, 90, 246, 0.3) !important;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            cursor: none !important;
+        }
+
+        .bobbing-buy-btn:hover {
+            transform: scale(1.07) !important;
+            box-shadow: 0 4px 15px rgba(95, 90, 246, 0.25) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            background: #4a45e0 !important;
+        }
+
+        .bobbing-buy-btn.success-state {
+            background: #10b981 !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4) !important;
+            transform: scale(0.96) !important;
+        }
+
+        /* Radial coin scatter elements */
+        .burst-coin {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #EF9F27;
+            border: 1.5px solid #BA7517;
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+            transition: transform 0.8s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.8s ease;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- GLASSMORPHIC PREMIUM MODALS --- */
+        .modal {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(13, 18, 30, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 
+                        0 0 40px rgba(95, 90, 246, 0.08) !important;
+            transform: scale(0.95);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) !important;
+        }
+
+        .modal-header {
+            padding: 20px 24px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.01) !important;
+        }
+
+        .modal-header h2.panel-title {
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+            background: linear-gradient(135deg, #ffffff 30%, #5f5af6 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+
+        .modal-body {
+            padding: 24px !important;
+            display: flex;
+            flex-direction: column;
+            gap: 18px !important;
+        }
+
+        .modal-footer {
+            padding: 16px 24px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .modal-est-box {
+            background: rgba(95, 90, 246, 0.04);
+            border: 1px solid rgba(95, 90, 246, 0.1);
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-est-title {
+            color: var(--text-secondary);
+        }
+
+        .modal-est-val {
+            color: var(--accent);
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(95, 90, 246, 0.3);
+        }
+
+        /* --- STYLED INTERACTIVE FORM ELEMENTS --- */
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: var(--text-secondary) !important;
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+            cursor: none !important;
+            outline: none !important;
+            padding: 0 !important;
+        }
+
+        .btn-icon:hover {
+            background: rgba(244, 63, 94, 0.18) !important;
+            border-color: rgba(244, 63, 94, 0.4) !important;
+            color: #f43f5e !important;
+            transform: rotate(90deg) scale(1.05) !important;
+        }
+
+        /* Hide HTML5 input number spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Watchlist & Holdings Delete buttons */
+        .btn-delete, .btn-icon-delete {
+            background: rgba(244, 63, 94, 0.06) !important;
+            border: 1px solid rgba(244, 63, 94, 0.15) !important;
+            color: rgba(244, 63, 94, 0.7) !important;
+            transition: all 0.2s ease !important;
+            cursor: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .btn-delete:hover, .btn-icon-delete:hover {
+            background: rgba(244, 63, 94, 0.22) !important;
+            border-color: rgba(244, 63, 94, 0.5) !important;
+            color: #f43f5e !important;
+            transform: scale(1.08) rotate(-8deg) !important;
+            box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
+        }
+
+        /* --- CUSTOM SELECT DROPDOWN --- */
+        .custom-select-container {
+            position: relative;
+            min-width: 180px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 990; /* high z-index to overlay graph */
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.45) !important;
+            border: 1px solid var(--panel-border) !important;
+            border-radius: 8px !important;
+            padding: 8px 14px !important;
+            color: #ffffff !important;
+            cursor: none !important; /* using custom coin cursor */
+            transition: all 0.2s ease !important;
+        }
+
+        .custom-select-trigger:hover {
+            background: rgba(95, 90, 246, 0.08) !important;
+            border-color: rgba(95, 90, 246, 0.4) !important;
+            box-shadow: 0 0 10px rgba(95, 90, 246, 0.1) !important;
+        }
+
+        .custom-select-container.open .custom-select-options {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .custom-select-container.open .custom-select-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .custom-select-options {
+            position: absolute;
+            top: 115%;
+            left: 0;
+            width: 100%;
+            background: rgba(13, 18, 30, 0.9) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 12px !important;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000 !important;
+            display: none;
+            flex-direction: column;
+            padding: 6px 0;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        .custom-select-group-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 14px 4px 14px;
+        }
+
+        .custom-select-option-item {
+            padding: 8px 14px;
+            color: var(--text-secondary);
+            cursor: none !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.15s ease;
+        }
+
+        .custom-select-option-item:hover {
+            background: rgba(95, 90, 246, 0.15) !important;
+            color: #ffffff !important;
+        }
+
+        .custom-select-option-item.selected {
+            background: rgba(95, 90, 246, 0.25) !important;
+            color: var(--accent) !important;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Live Ticker Tape Strip -->
+    <div class="ticker-tape-container">
+        <div class="ticker-tape-wrapper">
+            <div class="ticker-track" id="ticker-track">
+                <!-- Ticker items will scroll here -->
+            </div>
+        </div>
+    </div>
 
     <div class="app-container">
         
@@ -884,9 +1659,25 @@
                     <span class="status-dot"></span>
                     <span id="connection-text">Syncing Live</span>
                 </div>
-                <button class="btn btn-primary" onclick="openAddModal()">
-                    <i class="fa-solid fa-plus"></i> Buy / Add Asset
-                </button>
+                <!-- Currency Selector Pill -->
+                <div class="currency-pill" id="currency-pill">
+                    <div class="currency-pill-trigger" onclick="toggleCurrencyPill(event)">
+                        <span class="currency-flag" id="currency-flag-icon">$</span>
+                        <span id="currency-pill-text">USD</span>
+                        <i class="fa-solid fa-chevron-down chevron-icon"></i>
+                    </div>
+                    <div class="currency-pill-dropdown" id="currency-dropdown">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+                <!-- Redesigned header buy button wrapper -->
+                <div class="header-orbit-area">
+                    <div id="btn-header-buy-wrap">
+                        <button class="btn bobbing-buy-btn" id="btn-header-buy" onclick="handleHeaderBuyClick(event)">
+                            <i class="fa-solid fa-plus"></i> Buy / Add Asset
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -946,6 +1737,65 @@
                 </div>
                 <div class="summary-icon">
                     <i class="fa-solid fa-crown"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock History & Live Price Graph Panel -->
+        <div class="glass-panel graph-panel" style="margin-bottom: 28px; padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 16px; margin-bottom: 20px;">
+                <!-- Left: Stock Meta Summary Card -->
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div id="graph-company-logo" style="width: 44px; height: 44px; border-radius: 8px; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--accent); border: 1px solid var(--panel-border);">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h2 id="graph-company-name" style="font-size: 18px; font-weight: 700; color: #fff;">-</h2>
+                            <span id="graph-company-ticker" style="font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-glow); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(95, 90, 246, 0.15);">AAPL</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px;">
+                            <span id="graph-current-price" class="numeric" style="font-size: 20px; font-weight: 700; color: #fff;">$0.00</span>
+                            <span id="graph-day-change" class="numeric" style="font-size: 12.5px; font-weight: 600;">+0.00% (+$0.00)</span>
+                            <span id="graph-market-cap" style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">Cap: -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Dropdown Selector and Timeframe Toggles -->
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <div class="custom-select-container" id="graph-select-container">
+                        <div class="custom-select-trigger" id="graph-select-trigger" onclick="toggleCustomSelect(event)">
+                            <span id="graph-select-selected-text">Select Asset</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 11px; margin-left: 10px; transition: transform 0.2s ease;"></i>
+                        </div>
+                        <div class="custom-select-options" id="graph-select-options">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 6px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 8px; border: 1px solid var(--panel-border);">
+                        <button class="timeframe-btn active" onclick="switchGraphRange('1D')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">1D</button>
+                        <button class="timeframe-btn" onclick="switchGraphRange('1W')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">1W</button>
+                        <button class="timeframe-btn" onclick="switchGraphRange('1M')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">1M</button>
+                        <button class="timeframe-btn" onclick="switchGraphRange('6M')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">6M</button>
+                        <button class="timeframe-btn" onclick="switchGraphRange('1Y')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">1Y</button>
+                        <button class="timeframe-btn" onclick="switchGraphRange('5Y')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">5Y</button>
+                        <button class="timeframe-btn" onclick="switchGraphRange('MAX')" style="background:none; border:none; padding: 6px 10px; border-radius:6px; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);">MAX</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Canvas wrapper -->
+            <div style="position: relative; width: 100%; height: 350px;">
+                <canvas id="historyChart"></canvas>
+                <div id="graph-loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(13, 18, 30, 0.7); backdrop-filter: blur(4px); border-radius: 8px; z-index: 10;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 24px; color: var(--accent); margin-bottom: 8px;"></i>
+                    <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">Loading historical performance...</span>
+                </div>
+                <div id="graph-error-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(13, 18, 30, 0.7); backdrop-filter: blur(4px); border-radius: 8px; z-index: 10; text-align: center; padding: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 28px; color: var(--danger); margin-bottom: 8px;"></i>
+                    <span id="graph-error-text" style="font-size: 13.5px; color: var(--text-primary); font-weight: 600;">Unable to fetch market candles for this symbol.</span>
+                    <button class="btn btn-secondary" onclick="retryGraphFetch()" style="margin-top: 12px; padding: 6px 12px; font-size: 12px; border-radius: 5px;"><i class="fa-solid fa-rotate-right"></i> Try Again</button>
                 </div>
             </div>
         </div>
@@ -1019,27 +1869,45 @@
                 </div>
                 
                 <!-- Quote result card -->
-                <div id="lookup-card" class="quote-result-card">
-                    <div class="quote-header">
-                        <div class="symbol-cell">
-                            <span class="quote-sym" id="q-sym">AAPL</span>
-                            <span class="name-stub" id="q-name">Apple Inc.</span>
+                <div id="lookup-card" class="quote-result-card floating-card-container">
+                    <!-- Particles background container -->
+                    <div class="particles-bg" id="particles-container"></div>
+
+                    <!-- Top Area: Shows asset name, live price, and % change -->
+                    <div class="quote-header-redesign" style="display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; margin-bottom: 12px; width: 100%; position: relative; z-index: 10;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <div class="symbol-cell" style="display: flex; flex-direction: column;">
+                                <span class="quote-sym" id="q-sym" style="font-size: 20px; font-weight: 800; font-family: var(--font-display); letter-spacing: 0.5px; color: #ffffff;">AAPL</span>
+                                <span class="name-stub" id="q-name" style="font-size: 12.5px; color: var(--text-secondary); margin-top: 2px;">Apple Inc.</span>
+                            </div>
+                            <div class="quote-price" id="q-price" style="font-size: 22px; font-weight: 800; font-family: var(--font-display); color: #ffffff;">$0.00</div>
                         </div>
-                        <div class="quote-price" id="q-price">$0.00</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; margin-top: 4px;">
+                            <span style="color: var(--text-secondary); font-weight: 500;">Daily Change:</span>
+                            <span id="q-change" style="font-weight: 700;">+0.00%</span>
+                        </div>
                     </div>
                     
-                    <div class="quote-metrics">
-                        <div class="quote-metric">Daily Change: <span id="q-change" style="font-weight:600;">+0.00%</span></div>
-                        <div class="quote-metric">Prev Close: <span id="q-pc">$0.00</span></div>
-                        <div class="quote-metric">Open Price: <span id="q-open">$0.00</span></div>
-                        <div class="quote-metric">Day High / Low: <span id="q-hl">$0.00 / $0.00</span></div>
+                    <!-- Metrics Grid -->
+                    <div class="quote-metrics" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; font-size: 11px; margin-bottom: 12px; color: var(--text-secondary); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 12px; position: relative; z-index: 10;">
+                        <div>Prev Close: <span id="q-pc" style="font-weight:600; color:var(--text-primary);">$0.00</span></div>
+                        <div>Open Price: <span id="q-open" style="font-weight:600; color:var(--text-primary);">$0.00</span></div>
+                        <div style="grid-column: span 2;">High/Low: <span id="q-hl" style="font-weight:600; color:var(--text-primary);">$0.00 / $0.00</span></div>
                     </div>
 
-                    <div style="display: flex; gap: 8px; margin-top: 6px;">
-                        <button class="btn btn-primary" id="btn-quick-buy" style="flex-grow:1; justify-content:center; padding: 8px; font-size:12.5px; border-radius: 5px;">
-                            <i class="fa-solid fa-plus"></i> Buy Asset
-                        </button>
-                        <button class="btn btn-secondary" id="btn-quick-watch" style="flex-grow:1; justify-content:center; padding: 8px; font-size:12.5px; border-radius: 5px;">
+                    <!-- Button Area -->
+                    <div class="orbit-button-area" style="height: 60px; margin-top: 10px;">
+                        <!-- Buy Button Wrapper -->
+                        <div id="btn-quick-buy-wrap">
+                            <button class="btn bobbing-buy-btn" id="btn-quick-buy">
+                                <i class="fa-solid fa-plus"></i> Buy Asset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Watchlist Quick Button -->
+                    <div style="width: 100%; display: flex; justify-content: center; margin-top: 15px; position: relative; z-index: 10;">
+                        <button class="btn btn-secondary" id="btn-quick-watch" style="width: 100%; justify-content: center; padding: 8px; font-size: 11px; border-radius: 20px;">
                             <i class="fa-solid fa-eye"></i> Add Watch
                         </button>
                     </div>
@@ -1087,7 +1955,7 @@
     <div class="modal-overlay" id="add-modal">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="panel-title">Record Asset Purchase</h2>
+                <h2 class="panel-title"><i class="fa-solid fa-cart-shopping" style="color: var(--accent); margin-right: 6px;"></i> Record Asset Purchase</h2>
                 <button class="btn-icon" onclick="closeAddModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
@@ -1099,14 +1967,15 @@
                     <label class="form-label" for="add-quantity">Shares / Units</label>
                     <input type="number" class="form-input" id="add-quantity" placeholder="e.g. 10" step="any" min="0.0001">
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="add-price">Purchase Price (USD)</label>
-                    <input type="number" class="form-input" id="add-price" placeholder="Leave empty for live price" step="any" min="0.01">
+                <!-- Dynamic calculation box -->
+                <div class="modal-est-box" id="add-est-box" style="display: none;">
+                    <span class="modal-est-title">Estimated Cost:</span>
+                    <span class="modal-est-val" id="add-est-cost">$0.00</span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeAddModal()" style="padding: 6px 12px; border-radius: 5px; font-size:13px;">Cancel</button>
-                <button class="btn btn-primary" onclick="submitAddStock()" style="padding: 6px 12px; border-radius: 5px; font-size:13px;">Submit Purchase</button>
+                <button class="btn btn-secondary" onclick="closeAddModal()" style="padding: 8px 16px; border-radius: 20px; font-size:13px;">Cancel</button>
+                <button class="btn btn-primary bobbing-buy-btn" id="btn-modal-buy-submit" onclick="submitAddStock()" style="padding: 8px 16px; border-radius: 20px; font-size:13px;">Confirm Purchase</button>
             </div>
         </div>
     </div>
@@ -1115,7 +1984,7 @@
     <div class="modal-overlay" id="sell-modal">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="panel-title" id="sell-modal-title">Record Asset Sale</h2>
+                <h2 class="panel-title" id="sell-modal-title" style="background: linear-gradient(135deg, #ffffff 30%, #f43f5e 100%) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important;"><i class="fa-solid fa-chart-line-down" style="color: #f43f5e; margin-right: 6px;"></i> Record Asset Sale</h2>
                 <button class="btn-icon" onclick="closeSellModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
@@ -1123,12 +1992,17 @@
                 <div class="form-group">
                     <label class="form-label" id="sell-qty-label">Quantity to Sell</label>
                     <input type="number" class="form-input" id="sell-quantity" placeholder="e.g. 5" step="any" min="0.0001">
-                    <span style="font-size: 11px; color: var(--text-secondary);" id="sell-current-holding">Current Position: 0 shares</span>
+                    <span style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;" id="sell-current-holding">Current Position: 0 shares</span>
+                </div>
+                <!-- Dynamic calculation box -->
+                <div class="modal-est-box" id="sell-est-box" style="display: none;">
+                    <span class="modal-est-title">Estimated Proceeds:</span>
+                    <span class="modal-est-val" id="sell-est-cost" style="color: var(--success); text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);">$0.00</span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeSellModal()" style="padding: 6px 12px; border-radius: 5px; font-size:13px;">Cancel</button>
-                <button class="btn btn-primary" style="background: #f43f5e; padding: 6px 12px; border-radius: 5px; font-size:13px;" onclick="submitSellStock()">Submit Sale</button>
+                <button class="btn btn-secondary" onclick="closeSellModal()" style="padding: 8px 16px; border-radius: 20px; font-size:13px;">Cancel</button>
+                <button class="btn btn-primary" style="background: #f43f5e !important; box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3) !important; padding: 8px 16px; border-radius: 20px; font-size:13px;" onclick="submitSellStock()">Confirm Sale</button>
             </div>
         </div>
     </div>
@@ -1163,12 +2037,297 @@
         let activeNewsTab = 'market';
         let watchlist = [];
 
+        // --- CURRENCY SYSTEM ---
+        const SUPPORTED_CURRENCIES = [
+            { code: 'USD', symbol: '$',  name: 'US Dollar',        color: '#10b981' },
+            { code: 'EUR', symbol: '€',  name: 'Euro',             color: '#3b82f6' },
+            { code: 'GBP', symbol: '£',  name: 'British Pound',    color: '#8b5cf6' },
+            { code: 'INR', symbol: '₹',  name: 'Indian Rupee',     color: '#f59e0b' },
+            { code: 'JPY', symbol: '¥',  name: 'Japanese Yen',     color: '#ef4444' },
+            { code: 'AUD', symbol: 'A$', name: 'Australian Dollar', color: '#06b6d4' },
+            { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar',  color: '#ec4899' },
+            { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc',      color: '#64748b' }
+        ];
+
+        let activeCurrency = 'USD';
+        let exchangeRates = { USD: 1 }; // rates relative to USD
+        let ratesFetchedAt = 0;
+
+        // Ticker Tape Configuration & State
+        const TICKER_CONFIG = [
+            { symbol: '^NSEI', name: 'NIFTY 50' },
+            { symbol: '^BSESN', name: 'SENSEX' },
+            { symbol: '^NSEBANK', name: 'NIFTY BANK' },
+            { symbol: '^CNXIT', name: 'NIFTY IT' },
+            { symbol: '^GSPC', name: 'S&P 500' },
+            { symbol: '^DJI', name: 'DOW JONES' },
+            { symbol: '^IXIC', name: 'NASDAQ' },
+            { symbol: '^FTSE', name: 'FTSE 100' },
+            { symbol: '^N225', name: 'NIKKEI 225' },
+            { symbol: '^GDAXI', name: 'DAX INDEX' }
+        ];
+
+        let tickerQuotes = {};
+
+        // Historical Graph State Variables
+        let historyChart = null;
+        let activeGraphSymbol = 'AAPL';
+        let activeGraphRange = '1D';
+        let activeHistoryData = null;
+        let activeQuoteData = null;
+        let graphPollInterval = null;
+
         document.addEventListener("DOMContentLoaded", () => {
-            loadWatchlist();
-            refreshDashboard();
-            fetchNews('market');
-            setInterval(refreshDashboard, 30000);
+            // Load saved currency preference
+            const savedCur = localStorage.getItem('apex_currency');
+            if (savedCur && SUPPORTED_CURRENCIES.some(c => c.code === savedCur)) {
+                activeCurrency = savedCur;
+            }
+
+            initCurrencySelector();
+            fetchExchangeRates().then(() => {
+                loadWatchlist();
+                refreshDashboard();
+                fetchNews('market');
+                initializeGraph();
+                initTickerTape();
+                setInterval(refreshDashboard, 30000);
+            });
+            
+            // Custom coin cursor, particle background, and hover tracking setup
+            initCustomCursor();
+            initBuyScreenParticles();
+            initQuickBuyHoverTracking();
+            initHeaderBuyHoverTracking();
+            setupModalEstimates();
         });
+
+        // --- CUSTOM CURSOR & PARTICLES LOGIC ---
+        
+        function initCustomCursor() {
+            const cursor = document.createElement("div");
+            cursor.className = "custom-coin-cursor";
+            cursor.id = "custom-coin-cursor";
+            cursor.innerText = "$";
+            document.body.appendChild(cursor);
+            
+            document.addEventListener("mousemove", (e) => {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+                cursor.style.display = "flex";
+            });
+            
+            document.addEventListener("mouseleave", () => {
+                cursor.style.display = "none";
+            });
+        }
+
+        function initBuyScreenParticles() {
+            const container = document.getElementById("particles-container");
+            if (!container) return;
+            
+            const accentColors = ['#5f5af6', '#06b6d4', '#a855f7', '#ef9f27'];
+            for (let i = 0; i < 18; i++) {
+                const particle = document.createElement("div");
+                particle.className = "drift-particle";
+                
+                // Randomize positions, durations, delays, sizes, and colors
+                const size = 3 + Math.random() * 5; // 3px to 8px
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.bottom = `${Math.random() * 20}px`;
+                particle.style.backgroundColor = accentColors[Math.floor(Math.random() * accentColors.length)];
+                
+                const duration = 8 + Math.random() * 10; // 8s to 18s
+                const delay = Math.random() * -15; // random offset start
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        function triggerBuyButtonSuccess(btnId, originalText) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            
+            btn.classList.add("success-state");
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> Added!`;
+            
+            setTimeout(() => {
+                btn.classList.remove("success-state");
+                btn.innerHTML = originalText;
+            }, 1800);
+        }
+
+        function triggerCoinBurst(btnId, parentSelector) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            const parent = document.querySelector(parentSelector);
+            if (!parent) return;
+            
+            const btnRect = btn.getBoundingClientRect();
+            const parentRect = parent.getBoundingClientRect();
+            
+            // Calculate center of the button relative to the parent container
+            const centerX = btnRect.left - parentRect.left + btnRect.width / 2;
+            const centerY = btnRect.top - parentRect.top + btnRect.height / 2;
+            
+            for (let i = 0; i < 8; i++) {
+                const coin = document.createElement("div");
+                coin.className = "burst-coin";
+                coin.innerText = "$";
+                coin.style.left = `${centerX}px`;
+                coin.style.top = `${centerY}px`;
+                
+                // Angle for radial scatter (0, 45, 90, etc.)
+                const angle = (i * 45) * Math.PI / 180;
+                const distance = 60 + Math.random() * 30; // 60px to 90px scatter
+                const targetX = Math.cos(angle) * distance;
+                const targetY = Math.sin(angle) * distance;
+                
+                parent.appendChild(coin);
+                
+                // Trigger transition on next frame
+                requestAnimationFrame(() => {
+                    coin.style.transform = `translate(${targetX}px, ${targetY}px) scale(0.5) rotate(${Math.random() * 360}deg)`;
+                    coin.style.opacity = '0';
+                });
+                
+                // Cleanup
+                setTimeout(() => coin.remove(), 900);
+            }
+        }
+
+        // Header Buy Click Handler
+        function handleHeaderBuyClick(e) {
+            openAddModal();
+        }
+
+        // Set up card hover selectors to track quick buy button hover state
+        function initQuickBuyHoverTracking() {
+            const btn = document.getElementById("btn-quick-buy");
+            const card = document.getElementById("lookup-card");
+            if (!btn || !card) return;
+            
+            btn.addEventListener("mouseenter", () => {
+                card.classList.add("btn-hovered");
+            });
+            btn.addEventListener("mouseleave", () => {
+                card.classList.remove("btn-hovered");
+            });
+        }
+
+        // Set up hover tracking for header buy button
+        function initHeaderBuyHoverTracking() {
+            const btn = document.getElementById("btn-header-buy");
+            const container = document.querySelector(".header-orbit-area");
+            if (!btn || !container) return;
+            
+            btn.addEventListener("mouseenter", () => {
+                container.classList.add("btn-hovered");
+            });
+            btn.addEventListener("mouseleave", () => {
+                container.classList.remove("btn-hovered");
+            });
+        }
+
+        // Dynamic estimate cost updates in modals
+        function setupModalEstimates() {
+            const addQtyInput = document.getElementById("add-quantity");
+            const addSymInput = document.getElementById("add-symbol");
+            const addEstBox = document.getElementById("add-est-box");
+            const addEstCost = document.getElementById("add-est-cost");
+
+            let cachedPrice = 0;
+            let lastSymbol = "";
+
+            const updateAddEstimate = async () => {
+                const qty = parseFloat(addQtyInput.value);
+                const symbol = addSymInput.value.trim().toUpperCase();
+                
+                if (!symbol || isNaN(qty) || qty <= 0) {
+                    addEstBox.style.display = "none";
+                    return;
+                }
+
+                addEstBox.style.display = "flex";
+
+                // If symbol has changed, fetch its new price
+                if (symbol !== lastSymbol) {
+                    lastSymbol = symbol;
+                    cachedPrice = 0;
+                    addEstCost.innerText = "Calculating (Live Price)...";
+
+                    try {
+                        const response = await fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(symbol)}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data && data.currentPrice > 0) {
+                                cachedPrice = data.currentPrice;
+                            }
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                if (cachedPrice > 0) {
+                    addEstCost.innerText = formatCurrency(qty * cachedPrice);
+                } else {
+                    addEstCost.innerText = "Calculating (Live Price)...";
+                }
+            };
+
+            addQtyInput.addEventListener("input", updateAddEstimate);
+            addSymInput.addEventListener("input", updateAddEstimate);
+
+            // Sell estimation setup
+            const sellQtyInput = document.getElementById("sell-quantity");
+            const sellEstBox = document.getElementById("sell-est-box");
+            const sellEstCost = document.getElementById("sell-est-cost");
+
+            const updateSellEstimate = async () => {
+                const qty = parseFloat(sellQtyInput.value);
+                const symbol = document.getElementById("sell-symbol").value;
+                if (!isNaN(qty) && qty > 0 && symbol) {
+                    sellEstBox.style.display = "flex";
+                    try {
+                        const response = await fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(symbol)}`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data && data.currentPrice > 0) {
+                                sellEstCost.innerText = formatCurrency(qty * data.currentPrice);
+                                return;
+                            }
+                        }
+                    } catch (e) {}
+                    sellEstCost.innerText = "Calculating (Live Price)...";
+                } else {
+                    sellEstBox.style.display = "none";
+                }
+            };
+
+            sellQtyInput.addEventListener("input", updateSellEstimate);
+
+            // Hook close hooks to reset cache
+            const originalCloseAdd = closeAddModal;
+            closeAddModal = () => {
+                originalCloseAdd();
+                addEstBox.style.display = "none";
+                addQtyInput.value = "";
+                lastSymbol = "";
+                cachedPrice = 0;
+            };
+
+            const originalCloseSell = closeSellModal;
+            closeSellModal = () => {
+                originalCloseSell();
+                sellEstBox.style.display = "none";
+                sellQtyInput.value = "";
+            };
+        }
 
         // Toast Helper
         function showToast(message, type = 'info') {
@@ -1198,9 +2357,14 @@
         function openAddModal(defaultSym = '') {
             document.getElementById("add-symbol").value = defaultSym;
             document.getElementById("add-quantity").value = "";
-            document.getElementById("add-price").value = "";
             document.getElementById("add-modal").classList.add("active");
             document.getElementById("add-symbol").focus();
+            
+            // Recalculate modal estimates
+            const addQtyInput = document.getElementById("add-quantity");
+            if (addQtyInput) {
+                addQtyInput.dispatchEvent(new Event("input"));
+            }
         }
 
         function closeAddModal() {
@@ -1232,6 +2396,7 @@
                 renderSummary(data);
                 renderHoldings(data.holdings);
                 updateAllocationChart(data.holdings);
+                populateGraphSymbolDropdown();
             } catch (err) {
                 console.error(err);
                 updateStatus(false);
@@ -1326,7 +2491,7 @@
                     <td>
                         <div class="symbol-cell">
                             <span class="sym">${h.symbol}</span>
-                            <span class="name-stub">${getAssetDescription(h.symbol)}</span>
+                            <span class="name-stub">${h.name || getAssetDescription(h.symbol)}</span>
                         </div>
                     </td>
                     <td class="numeric">${h.quantity.toFixed(4).replace(/\.?0+$/, "")}</td>
@@ -1341,7 +2506,7 @@
                         <div class="actions-cell">
                             <button class="btn-table btn-table-buy" onclick="openAddModal('${h.symbol}')"><i class="fa-solid fa-plus"></i> Buy</button>
                             <button class="btn-table btn-table-sell" onclick="openSellModal('${h.symbol}', ${h.quantity})"><i class="fa-solid fa-minus"></i> Sell</button>
-                            <button class="btn-icon-delete btn-delete" onclick="deletePosition('${h.symbol}')" title="Close Position"><i class="fa-solid fa-trash"></i></button>
+                            <button class="btn-delete" onclick="deletePosition('${h.symbol}')" title="Close Position" style="width:26px; height:26px; border-radius:50%; font-size:11px;"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 `;
@@ -1455,7 +2620,6 @@
         async function submitAddStock() {
             const symbol = document.getElementById("add-symbol").value.trim().toUpperCase();
             const quantity = parseFloat(document.getElementById("add-quantity").value);
-            const price = parseFloat(document.getElementById("add-price").value);
 
             if (!symbol) {
                 showToast("Please enter a valid stock symbol", "error");
@@ -1466,13 +2630,32 @@
                 return;
             }
 
+            // Fetch live price since price input is removed
+            let livePrice = 0;
+            try {
+                const quoteRes = await fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(symbol)}`);
+                if (quoteRes.ok) {
+                    const quoteData = await quoteRes.json();
+                    if (quoteData && quoteData.currentPrice > 0) {
+                        livePrice = quoteData.currentPrice;
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch live price during submit", e);
+            }
+
+            if (livePrice <= 0) {
+                showToast("Could not retrieve live price for symbol: " + symbol, "error");
+                return;
+            }
+
+            const submitBtn = document.getElementById("btn-modal-buy-submit");
+
             try {
                 const bodyParams = new URLSearchParams();
                 bodyParams.append("symbol", symbol);
                 bodyParams.append("quantity", quantity.toString());
-                if (!isNaN(price) && price > 0) {
-                    bodyParams.append("price", price.toString());
-                }
+                bodyParams.append("price", livePrice.toString()); // use the fetched live price!
 
                 const response = await fetch(`${API_BASE}/add`, {
                     method: 'POST',
@@ -1483,10 +2666,27 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || "Add transaction failed");
 
+                // Trigger confirmation styling on modal submit button!
+                if (submitBtn) {
+                    // Trigger coin burst on modal button
+                    triggerCoinBurst("btn-modal-buy-submit", "#add-modal .modal-body");
+                    submitBtn.classList.add("success-state");
+                    submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Added!`;
+                }
+
                 showToast(`Recorded ${quantity} shares of ${symbol}!`, "success");
-                closeAddModal();
-                refreshDashboard();
-                if (activeNewsTab === 'holdings') fetchNews('holdings');
+                
+                // Wait 1 second before closing and refreshing so they see the success and the burst animation
+                setTimeout(() => {
+                    if (submitBtn) {
+                        submitBtn.classList.remove("success-state");
+                        submitBtn.innerHTML = "Confirm Purchase";
+                    }
+                    closeAddModal();
+                    refreshDashboard();
+                    if (activeNewsTab === 'holdings') fetchNews('holdings');
+                }, 1000);
+                
             } catch (err) {
                 showToast(err.message, "error");
             }
@@ -1502,6 +2702,8 @@
                 return;
             }
 
+            const submitBtn = document.querySelector("#sell-modal .modal-footer .btn-primary");
+
             try {
                 const bodyParams = new URLSearchParams();
                 bodyParams.append("symbol", symbol);
@@ -1516,10 +2718,22 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || "Sale failed");
 
+                if (submitBtn) {
+                    submitBtn.classList.add("success-state");
+                    submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Sold!`;
+                }
+
                 showToast(`Recorded sale of ${quantity} shares of ${symbol}!`, "success");
-                closeSellModal();
-                refreshDashboard();
-                if (activeNewsTab === 'holdings') fetchNews('holdings');
+                
+                setTimeout(() => {
+                    if (submitBtn) {
+                        submitBtn.classList.remove("success-state");
+                        submitBtn.innerHTML = "Confirm Sale";
+                    }
+                    closeSellModal();
+                    refreshDashboard();
+                    if (activeNewsTab === 'holdings') fetchNews('holdings');
+                }, 1000);
             } catch (err) {
                 showToast(err.message, "error");
             }
@@ -1555,7 +2769,7 @@
             if (!symbol) return;
 
             try {
-                const response = await fetch(`${API_BASE}/quote?symbol=${symbol}`);
+                const response = await fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(symbol)}`);
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.error || "Lookup failed");
 
@@ -1564,33 +2778,62 @@
                     return;
                 }
 
-                document.getElementById("q-sym").innerText = symbol;
-                document.getElementById("q-name").innerText = getAssetDescription(symbol);
-                document.getElementById("q-price").innerText = formatCurrency(data.currentPrice);
+                const resolvedSymbol = data.symbol;
+
+                // Dynamically fetch profile to get official company name
+                let companyName = resolvedSymbol;
+                try {
+                    const profileRes = await fetch(`${API_BASE}/profile?symbol=${encodeURIComponent(resolvedSymbol)}`);
+                    if (profileRes.ok) {
+                        const profileData = await profileRes.json();
+                        if (profileData && profileData.name) {
+                            companyName = profileData.name;
+                        }
+                    }
+                } catch (e) {
+                    companyName = getAssetDescription(resolvedSymbol);
+                }
+
+                document.getElementById("q-sym").innerText = resolvedSymbol;
+                document.getElementById("q-name").innerText = companyName;
+                const qPriceEl = document.getElementById("q-price");
+                qPriceEl.innerText = formatCurrency(data.currentPrice);
+                qPriceEl.dataset.rawUsd = data.currentPrice;
                 
                 const changeVal = data.changePercent;
                 const changeEl = document.getElementById("q-change");
-                changeEl.innerText = `${changeVal >= 0 ? '+' : ''}${changeVal.toFixed(2)}% ($${data.change.toFixed(2)})`;
+                const curSym = SUPPORTED_CURRENCIES.find(c => c.code === activeCurrency)?.symbol || '$';
+                const convChange = data.change * (exchangeRates[activeCurrency] || 1);
+                changeEl.innerText = `${changeVal >= 0 ? '+' : ''}${changeVal.toFixed(2)}% (${curSym}${convChange >= 0 ? '+' : ''}${convChange.toFixed(2)})`;
                 changeEl.className = changeVal >= 0 ? 'pnl-up' : 'pnl-down';
 
                 document.getElementById("q-pc").innerText = formatCurrency(data.prevClose);
                 document.getElementById("q-open").innerText = formatCurrency(data.open);
                 document.getElementById("q-hl").innerText = `${formatCurrency(data.high)} / ${formatCurrency(data.low)}`;
 
-                document.getElementById("btn-quick-buy").onclick = () => openAddModal(symbol);
+                document.getElementById("btn-quick-buy").onclick = (e) => {
+                    openAddModal(resolvedSymbol);
+                };
                 
                 const btnWatch = document.getElementById("btn-quick-watch");
-                if (watchlist.includes(symbol)) {
+                if (watchlist.includes(resolvedSymbol)) {
                     btnWatch.innerHTML = `<i class="fa-solid fa-eye-slash"></i> Unwatch`;
                     btnWatch.className = "btn btn-secondary";
-                    btnWatch.onclick = () => removeFromWatchlist(symbol);
+                    btnWatch.onclick = () => removeFromWatchlist(resolvedSymbol);
                 } else {
                     btnWatch.innerHTML = `<i class="fa-solid fa-eye"></i> Watch`;
                     btnWatch.className = "btn btn-primary";
-                    btnWatch.onclick = () => addToWatchlist(symbol);
+                    btnWatch.onclick = () => addToWatchlist(resolvedSymbol);
                 }
 
                 document.getElementById("lookup-card").style.display = "flex";
+                
+                // Sync graph
+                const containerEl = document.getElementById("graph-select-container");
+                if (containerEl) {
+                    activeGraphSymbol = resolvedSymbol;
+                    selectGraphSymbol(resolvedSymbol, "Research");
+                }
             } catch (err) {
                 showToast(err.message, "error");
             }
@@ -1638,6 +2881,7 @@
 
             if (watchlist.length === 0) {
                 emptyEl.style.display = "flex";
+                populateGraphSymbolDropdown();
                 return;
             }
             emptyEl.style.display = "none";
@@ -1648,22 +2892,23 @@
                 item.innerHTML = `
                     <div style="display:flex; flex-direction:column; cursor:pointer;" onclick="fillLookup('${sym}')">
                         <span style="font-weight:700; font-size:13.5px; font-family: 'Plus Jakarta Sans', sans-serif;">${sym}</span>
-                        <span style="font-size:11px; color:var(--text-secondary);">${getAssetDescription(sym)}</span>
+                        <span id="watch-name-${sym}" style="font-size:11px; color:var(--text-secondary);">${getAssetDescription(sym)}</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:12px;">
                         <span id="watch-price-${sym}" class="numeric" style="font-weight:600;">$0.00</span>
                         <span id="watch-change-${sym}" class="numeric" style="font-size:11.5px; font-weight:600;">0.00%</span>
-                        <button class="btn-icon btn-delete" onclick="removeFromWatchlist('${sym}')" title="Remove Watch" style="width:20px; height:20px; border-radius:4px; font-size:9px;"><i class="fa-solid fa-trash"></i></button>
+                        <button class="btn-delete" onclick="removeFromWatchlist('${sym}')" title="Remove Watch" style="width:24px; height:24px; border-radius:50%; font-size:10px;"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
                 container.appendChild(item);
                 fetchWatchlistQuote(sym);
             }
+            populateGraphSymbolDropdown();
         }
 
         async function fetchWatchlistQuote(sym) {
             try {
-                const response = await fetch(`${API_BASE}/quote?symbol=${sym}`);
+                const response = await fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(sym)}`);
                 const data = await response.json();
                 if (response.ok) {
                     const priceEl = document.getElementById(`watch-price-${sym}`);
@@ -1672,6 +2917,16 @@
                         priceEl.innerText = formatCurrency(data.currentPrice);
                         changeEl.innerText = `${data.changePercent >= 0 ? '+' : ''}${data.changePercent.toFixed(2)}%`;
                         changeEl.className = data.changePercent >= 0 ? 'pnl-up numeric' : 'pnl-down numeric';
+                    }
+                }
+
+                // Dynamically fetch profile to get official company name
+                const profResp = await fetch(`${API_BASE}/profile?symbol=${encodeURIComponent(sym)}`);
+                if (profResp.ok) {
+                    const profData = await profResp.json();
+                    const nameEl = document.getElementById(`watch-name-${sym}`);
+                    if (nameEl && profData && profData.name) {
+                        nameEl.innerText = profData.name;
                     }
                 }
             } catch (err) {
@@ -1799,10 +3054,714 @@
             }
         }
 
-        // Format Currency utility
+        // Format Currency utility — converts from USD to active currency
         function formatCurrency(val) {
-            if (val === undefined || isNaN(val)) return "$0.00";
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+            if (val === undefined || isNaN(val)) {
+                const cur = SUPPORTED_CURRENCIES.find(c => c.code === activeCurrency);
+                return `${cur ? cur.symbol : '$'}0.00`;
+            }
+            const rate = exchangeRates[activeCurrency] || 1;
+            const converted = val * rate;
+            
+            // Use Intl for proper locale formatting
+            try {
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: activeCurrency }).format(converted);
+            } catch (e) {
+                const cur = SUPPORTED_CURRENCIES.find(c => c.code === activeCurrency);
+                return `${cur ? cur.symbol : '$'}${converted.toFixed(2)}`;
+            }
+        }
+
+        // --- CURRENCY SELECTOR LOGIC ---
+        async function fetchExchangeRates() {
+            // Only refetch if older than 10 minutes
+            if (Date.now() - ratesFetchedAt < 600000 && Object.keys(exchangeRates).length > 1) return;
+            
+            try {
+                // Using the free exchangerate.host API (no key needed)
+                const codes = SUPPORTED_CURRENCIES.map(c => c.code).join(',');
+                const resp = await fetch(`https://api.exchangerate.host/latest?base=USD&symbols=${codes}`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data.rates) {
+                        exchangeRates = { USD: 1, ...data.rates };
+                        ratesFetchedAt = Date.now();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Primary exchange rate API failed, trying fallback...', e);
+            }
+
+            // Fallback: approximate rates (updated periodically)
+            try {
+                const resp2 = await fetch(`https://open.er-api.com/v6/latest/USD`);
+                if (resp2.ok) {
+                    const data2 = await resp2.json();
+                    if (data2 && data2.rates) {
+                        exchangeRates = { USD: 1 };
+                        SUPPORTED_CURRENCIES.forEach(c => {
+                            if (data2.rates[c.code]) exchangeRates[c.code] = data2.rates[c.code];
+                        });
+                        ratesFetchedAt = Date.now();
+                        return;
+                    }
+                }
+            } catch (e2) {
+                console.warn('Fallback exchange rate API also failed, using hardcoded rates', e2);
+            }
+
+            // Hardcoded fallback so the app never breaks
+            exchangeRates = {
+                USD: 1, EUR: 0.92, GBP: 0.79, INR: 83.5,
+                JPY: 157.2, AUD: 1.53, CAD: 1.37, CHF: 0.88
+            };
+            ratesFetchedAt = Date.now();
+        }
+
+        function initCurrencySelector() {
+            const dropdown = document.getElementById('currency-dropdown');
+            if (!dropdown) return;
+
+            let html = '';
+            SUPPORTED_CURRENCIES.forEach(cur => {
+                const isActive = cur.code === activeCurrency;
+                html += `
+                    <div class="currency-option ${isActive ? 'active' : ''}" onclick="switchCurrency('${cur.code}')">
+                        <span class="cur-symbol" style="background: ${cur.color}20; border-color: ${cur.color}40; color: ${cur.color};">${cur.symbol}</span>
+                        <span class="cur-label">${cur.name}</span>
+                        <span class="cur-code">${cur.code}</span>
+                    </div>
+                `;
+            });
+            dropdown.innerHTML = html;
+
+            // Update trigger display
+            updateCurrencyPillDisplay();
+        }
+
+        function updateCurrencyPillDisplay() {
+            const cur = SUPPORTED_CURRENCIES.find(c => c.code === activeCurrency);
+            if (!cur) return;
+            const flagEl = document.getElementById('currency-flag-icon');
+            const textEl = document.getElementById('currency-pill-text');
+            if (flagEl) {
+                flagEl.innerText = cur.symbol;
+                flagEl.style.background = `${cur.color}20`;
+                flagEl.style.borderColor = `${cur.color}40`;
+                flagEl.style.color = cur.color;
+            }
+            if (textEl) textEl.innerText = cur.code;
+        }
+
+        function toggleCurrencyPill(e) {
+            e.stopPropagation();
+            const pill = document.getElementById('currency-pill');
+            pill.classList.toggle('open');
+        }
+
+        // Close currency dropdown on outside click
+        document.addEventListener('click', (e) => {
+            const pill = document.getElementById('currency-pill');
+            if (pill && !pill.contains(e.target)) {
+                pill.classList.remove('open');
+            }
+        });
+
+        async function switchCurrency(code) {
+            activeCurrency = code;
+            localStorage.setItem('apex_currency', code);
+
+            // Close dropdown
+            document.getElementById('currency-pill').classList.remove('open');
+
+            // Update pill display
+            updateCurrencyPillDisplay();
+
+            // Re-render dropdown to mark active
+            initCurrencySelector();
+
+            // Ensure rates are loaded
+            await fetchExchangeRates();
+
+            // Re-render all data with new currency
+            refreshDashboard();
+            renderWatchlist();
+            if (activeQuoteData) {
+                document.getElementById('graph-current-price').innerText = formatCurrency(activeQuoteData.currentPrice);
+            }
+            // Re-render the lookup card if visible
+            const lookupCard = document.getElementById('lookup-card');
+            if (lookupCard && lookupCard.style.display !== 'none') {
+                const priceEl = document.getElementById('q-price');
+                if (priceEl && priceEl.dataset.rawUsd) {
+                    priceEl.innerText = formatCurrency(parseFloat(priceEl.dataset.rawUsd));
+                }
+            }
+            // Re-render chart y-axis
+            if (historyChart) {
+                historyChart.options.scales.y.ticks.callback = function(value) {
+                    return formatCurrency(value);
+                };
+                historyChart.update();
+            }
+
+            showToast(`Currency switched to ${code}`, 'info');
+        }
+
+        // --- Custom Dropdown Handlers ---
+        function toggleCustomSelect(e) {
+            e.stopPropagation();
+            const container = document.getElementById("graph-select-container");
+            if (container) {
+                container.classList.toggle("open");
+                const options = document.getElementById("graph-select-options");
+                if (container.classList.contains("open")) {
+                    options.style.display = "flex";
+                    setTimeout(() => {
+                        options.style.opacity = "1";
+                        options.style.transform = "translateY(0)";
+                        options.style.pointerEvents = "auto";
+                    }, 10);
+                } else {
+                    options.style.opacity = "0";
+                    options.style.transform = "translateY(-8px)";
+                    options.style.pointerEvents = "none";
+                    setTimeout(() => {
+                        options.style.display = "none";
+                    }, 200);
+                }
+            }
+        }
+
+        // Close custom select when clicking outside
+        document.addEventListener("click", () => {
+            const container = document.getElementById("graph-select-container");
+            if (container && container.classList.contains("open")) {
+                const options = document.getElementById("graph-select-options");
+                container.classList.remove("open");
+                options.style.opacity = "0";
+                options.style.transform = "translateY(-8px)";
+                options.style.pointerEvents = "none";
+                setTimeout(() => {
+                    options.style.display = "none";
+                }, 200);
+            }
+        });
+
+        function selectGraphSymbol(sym, label) {
+            activeGraphSymbol = sym;
+            
+            // Close dropdown
+            const container = document.getElementById("graph-select-container");
+            const options = document.getElementById("graph-select-options");
+            if (container) {
+                container.classList.remove("open");
+                if (options) {
+                    options.style.opacity = "0";
+                    options.style.transform = "translateY(-8px)";
+                    options.style.pointerEvents = "none";
+                    setTimeout(() => {
+                        options.style.display = "none";
+                    }, 200);
+                }
+            }
+
+            // Reload graph
+            updateGraph();
+            // Re-render choices to mark selected state
+            populateGraphSymbolDropdown();
+        }
+
+        // --- Stock History Graph Logic ---
+        async function initializeGraph() {
+            activeGraphSymbol = 'AAPL';
+            await populateGraphSymbolDropdown();
+            await updateGraph();
+
+            if (graphPollInterval) clearInterval(graphPollInterval);
+            graphPollInterval = setInterval(refreshGraphQuote, 60000);
+        }
+
+        async function populateGraphSymbolDropdown() {
+            const optionsContainer = document.getElementById("graph-select-options");
+            if (!optionsContainer) return;
+
+            let holdings = [];
+            try {
+                const response = await fetch(`${API_BASE}/portfolio`);
+                if (response.ok) {
+                    const data = await response.json();
+                    holdings = data.holdings || [];
+                }
+            } catch (e) {
+                console.error("Failed to load holdings for dropdown", e);
+            }
+
+            const majorStocks = ['AAPL', 'MSFT', 'TSLA', 'NVDA', 'SPY', 'QQQ', 'AMZN', 'GOOGL'];
+            const addedSymbols = new Set();
+            let optionsHtml = "";
+
+            const addOption = (sym, label) => {
+                const isSelected = sym === activeGraphSymbol;
+                return `
+                    <div class="custom-select-option-item ${isSelected ? 'selected' : ''}" 
+                         onclick="selectGraphSymbol('${sym}', '${label}')">
+                        <span>${sym}</span>
+                        <span style="font-size:10.5px; opacity:0.6;">${label}</span>
+                    </div>
+                `;
+            };
+
+            if (holdings.length > 0) {
+                optionsHtml += `<div class="custom-select-group-title">Portfolio Holdings</div>`;
+                holdings.forEach(h => {
+                    const sym = h.symbol.toUpperCase();
+                    if (!addedSymbols.has(sym)) {
+                        optionsHtml += addOption(sym, "Holding");
+                        addedSymbols.add(sym);
+                    }
+                });
+            }
+
+            const watchlistFiltered = watchlist.filter(sym => !addedSymbols.has(sym.toUpperCase()));
+            if (watchlistFiltered.length > 0) {
+                optionsHtml += `<div class="custom-select-group-title">Watchlist</div>`;
+                watchlistFiltered.forEach(s => {
+                    const sym = s.toUpperCase();
+                    optionsHtml += addOption(sym, "Watch");
+                    addedSymbols.add(sym);
+                });
+            }
+
+            const majorFiltered = majorStocks.filter(sym => !addedSymbols.has(sym));
+            if (majorFiltered.length > 0) {
+                optionsHtml += `<div class="custom-select-group-title">Popular Assets</div>`;
+                majorFiltered.forEach(sym => {
+                    optionsHtml += addOption(sym, "Market");
+                });
+            }
+
+            optionsContainer.innerHTML = optionsHtml;
+
+            // Update selected display text
+            const selectedTextEl = document.getElementById("graph-select-selected-text");
+            if (selectedTextEl) {
+                let currentLabel = "Market";
+                if (holdings.some(h => h.symbol.toUpperCase() === activeGraphSymbol)) {
+                    currentLabel = "Holding";
+                } else if (watchlist.some(s => s.toUpperCase() === activeGraphSymbol)) {
+                    currentLabel = "Watch";
+                }
+                selectedTextEl.innerText = `${activeGraphSymbol} (${currentLabel})`;
+            }
+        }
+
+        async function updateGraph() {
+            const loadingEl = document.getElementById("graph-loading");
+            const errorOverlay = document.getElementById("graph-error-overlay");
+
+            if (loadingEl) loadingEl.style.display = "flex";
+            if (errorOverlay) errorOverlay.style.display = "none";
+
+            try {
+                const [profileRes, quoteRes, historyRes] = await Promise.all([
+                    fetch(`${API_BASE}/profile?symbol=${encodeURIComponent(activeGraphSymbol)}`),
+                    fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(activeGraphSymbol)}`),
+                    fetch(`${API_BASE}/history?symbol=${encodeURIComponent(activeGraphSymbol)}&range=${activeGraphRange}`)
+                ]);
+
+                if (!historyRes.ok || !quoteRes.ok) {
+                    throw new Error("Connection failed or symbol invalid.");
+                }
+
+                const profileData = profileRes.ok ? await profileRes.json() : null;
+                const quoteData = await quoteRes.json();
+                const historyData = await historyRes.json();
+
+                if (historyData.s !== "ok") {
+                    throw new Error("No historical trading candles returned.");
+                }
+
+                activeHistoryData = historyData;
+                activeQuoteData = quoteData;
+
+                document.getElementById("graph-company-ticker").innerText = activeGraphSymbol;
+                
+                const name = profileData && profileData.name ? profileData.name : getAssetDescription(activeGraphSymbol);
+                document.getElementById("graph-company-name").innerText = name;
+
+                document.getElementById("graph-current-price").innerText = formatCurrency(quoteData.currentPrice);
+
+                const changeVal = quoteData.changePercent;
+                const changeEl = document.getElementById("graph-day-change");
+                changeEl.innerText = `${changeVal >= 0 ? '+' : ''}${changeVal.toFixed(2)}% ($${quoteData.change >= 0 ? '+' : ''}${quoteData.change.toFixed(2)})`;
+                changeEl.className = `numeric ${changeVal >= 0 ? 'pnl-up' : 'pnl-down'}`;
+
+                let capText = "-";
+                if (profileData && profileData.marketCapitalization) {
+                    const cap = profileData.marketCapitalization; // Millions
+                    if (cap >= 1000000) {
+                        capText = `$${(cap / 1000000).toFixed(2)}T`;
+                    } else if (cap >= 1000) {
+                        capText = `$${(cap / 1000).toFixed(2)}B`;
+                    } else {
+                        capText = `$${cap.toFixed(2)}M`;
+                    }
+                }
+                document.getElementById("graph-market-cap").innerText = `Cap: ${capText}`;
+
+                const logoEl = document.getElementById("graph-company-logo");
+                if (logoEl) {
+                    if (profileData && profileData.logo) {
+                        logoEl.innerHTML = `<img src="${profileData.logo}" alt="${name}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;">`;
+                    } else {
+                        logoEl.innerHTML = `<i class="fa-solid fa-building"></i>`;
+                    }
+                }
+
+                renderHistoryChart();
+
+            } catch (err) {
+                console.error(err);
+                if (errorOverlay) {
+                    document.getElementById("graph-error-text").innerText = `Error loading details for ${activeGraphSymbol}: ${err.message}`;
+                    errorOverlay.style.display = "flex";
+                }
+            } finally {
+                if (loadingEl) loadingEl.style.display = "none";
+            }
+        }
+
+        async function refreshGraphQuote() {
+            if (!activeGraphSymbol) return;
+            try {
+                const response = await fetch(`${API_BASE}/quote?symbol=${encodeURIComponent(activeGraphSymbol)}`);
+                if (response.ok) {
+                    const quoteData = await response.json();
+                    activeQuoteData = quoteData;
+                    
+                    document.getElementById("graph-current-price").innerText = formatCurrency(quoteData.currentPrice);
+
+                    const changeVal = quoteData.changePercent;
+                    const changeEl = document.getElementById("graph-day-change");
+                    changeEl.innerText = `${changeVal >= 0 ? '+' : ''}${changeVal.toFixed(2)}% ($${quoteData.change >= 0 ? '+' : ''}${quoteData.change.toFixed(2)})`;
+                    changeEl.className = `numeric ${changeVal >= 0 ? 'pnl-up' : 'pnl-down'}`;
+
+                    if (historyChart) {
+                        historyChart.update('none'); // silent overlay update
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch live quote update", e);
+            }
+        }
+
+        function renderHistoryChart() {
+            const canvas = document.getElementById("historyChart");
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const labels = activeHistoryData.t.map(ts => formatDate(ts, activeGraphRange));
+            const prices = activeHistoryData.c;
+
+            const chartGradient = ctx.createLinearGradient(0, 0, 0, 300);
+            chartGradient.addColorStop(0, 'rgba(95, 90, 246, 0.22)');
+            chartGradient.addColorStop(1, 'rgba(95, 90, 246, 0.00)');
+
+            const currentPriceLinePlugin = {
+                id: 'currentPriceLine',
+                afterDraw: (chart) => {
+                    if (!activeQuoteData) return;
+                    const ctx = chart.ctx;
+                    const yScale = chart.scales.y;
+                    const xScale = chart.scales.x;
+                    const currentPrice = activeQuoteData.currentPrice;
+
+                    const yPixel = yScale.getPixelForValue(currentPrice);
+                    if (yPixel < yScale.top || yPixel > yScale.bottom) return;
+
+                    const priceText = formatCurrency(currentPrice);
+                    ctx.font = 'bold 9.5px monospace';
+                    const textWidth = ctx.measureText(priceText).width;
+                    const boxWidth = Math.max(54, textWidth + 8);
+
+                    ctx.save();
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([4, 4]);
+
+                    ctx.beginPath();
+                    ctx.moveTo(xScale.left, yPixel);
+                    ctx.lineTo(xScale.right, yPixel);
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#5f5af6';
+                    ctx.fillRect(xScale.right + 2, yPixel - 9, boxWidth, 18);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(priceText, xScale.right + 2 + (boxWidth / 2), yPixel);
+
+                    ctx.restore();
+                }
+            };
+
+            if (historyChart) {
+                historyChart.destroy();
+            }
+
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Price',
+                        data: prices,
+                        borderColor: '#5f5af6',
+                        borderWidth: 2.2,
+                        backgroundColor: chartGradient,
+                        fill: true,
+                        tension: 0.15,
+                        pointRadius: activeGraphRange === '1D' || activeGraphRange === '1W' ? 0 : 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#5f5af6',
+                        pointHoverBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            right: 60
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: '#0d121e',
+                            borderColor: 'rgba(255, 255, 255, 0.08)',
+                            borderWidth: 1,
+                            titleColor: '#fff',
+                            bodyColor: '#94a3b8',
+                            titleFont: { family: 'Plus Jakarta Sans', weight: 'bold', size: 12 },
+                            bodyFont: { family: 'Inter', size: 11.5 },
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const idx = tooltipItems[0].dataIndex;
+                                    const ts = activeHistoryData.t[idx];
+                                    return formatDateFull(ts, activeGraphRange);
+                                },
+                                label: function(context) {
+                                    const idx = context.dataIndex;
+                                    const close = activeHistoryData.c[idx];
+                                    const open = activeHistoryData.o[idx];
+                                    const high = activeHistoryData.h[idx];
+                                    const low = activeHistoryData.l[idx];
+                                    const volume = activeHistoryData.v[idx];
+                                    return [
+                                        `Close:   ${formatCurrency(close)}`,
+                                        `Open:    ${formatCurrency(open)}`,
+                                        `High:    ${formatCurrency(high)}`,
+                                        `Low:     ${formatCurrency(low)}`,
+                                        `Volume:  ${formatNumber(volume)}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { family: 'Inter', size: 10 },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 40
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.025)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { family: 'monospace', size: 10 },
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                },
+                plugins: [currentPriceLinePlugin]
+            });
+        }
+
+        function formatDate(timestamp, range) {
+            const date = new Date(timestamp * 1000);
+            if (range === '1D') {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            if (range === '1W') {
+                return date.toLocaleDateString([], { weekday: 'short', hour: '2-digit' });
+            }
+            if (range === '1M' || range === '6M') {
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
+            if (range === '1Y') {
+                return date.toLocaleDateString([], { month: 'short', year: '2-digit' });
+            }
+            return date.toLocaleDateString([], { month: 'short', year: 'numeric' });
+        }
+
+        function formatDateFull(timestamp, range) {
+            const date = new Date(timestamp * 1000);
+            if (range === '1D' || range === '1W') {
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatNumber(num) {
+            if (num === undefined || isNaN(num)) return "0";
+            if (num >= 1000000000) return (num / 1000000000).toFixed(2) + "B";
+            if (num >= 1000000) return (num / 1000000).toFixed(2) + "M";
+            if (num >= 1000) return (num / 1000).toFixed(1) + "K";
+            return num.toLocaleString();
+        }
+
+        // onGraphSymbolChange removed (using selectGraphSymbol custom dropdown selection)
+
+        function switchGraphRange(range) {
+            activeGraphRange = range;
+            const btns = document.querySelectorAll(".timeframe-btn");
+            btns.forEach(btn => {
+                if (btn.innerText.toUpperCase() === range.toUpperCase()) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+            updateGraph();
+        }
+
+        function retryGraphFetch() {
+            updateGraph();
+        }
+
+        // Stock Ticker Tape Implementation
+        function initTickerTape() {
+            const track = document.getElementById("ticker-track");
+            if (!track) return;
+
+            // Generate items twice for seamless loop
+            const renderItems = (dupSuffix) => {
+                return TICKER_CONFIG.map(item => {
+                    const cleanSym = item.symbol.replace('^', 'IDX_');
+                    return `
+                        <div class="ticker-item" onclick="onTickerItemClick('${item.symbol}')">
+                            <span class="ticker-name">${item.name}</span>
+                            <span class="ticker-price" id="tick-price-${cleanSym}-${dupSuffix}">--</span>
+                            <span class="ticker-change" id="tick-change-${cleanSym}-${dupSuffix}">
+                                <i class="fa-solid fa-minus"></i> 0.00%
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            track.innerHTML = renderItems('first') + renderItems('second');
+            
+            // JS fallback hover listener
+            const container = document.querySelector(".ticker-tape-container");
+            if (container) {
+                container.addEventListener("mouseenter", () => {
+                    track.style.animationPlayState = "paused";
+                });
+                container.addEventListener("mouseleave", () => {
+                    track.style.animationPlayState = "running";
+                });
+            }
+            
+            // Start polling
+            pollTickerData();
+            setInterval(pollTickerData, 30000); // Poll every 30 seconds
+        }
+
+        async function pollTickerData() {
+            try {
+                const symbolsCsv = TICKER_CONFIG.map(c => c.symbol).join(',');
+                const response = await fetch(`${API_BASE}/ticker?symbols=${encodeURIComponent(symbolsCsv)}`);
+                if (!response.ok) throw new Error("Ticker fetch failed");
+                const data = await response.json();
+
+                data.forEach(quote => {
+                    tickerQuotes[quote.symbol] = quote;
+                    updateTickerItem(quote.symbol, quote);
+                });
+            } catch (err) {
+                console.error("Error polling ticker data:", err);
+            }
+        }
+
+        function updateTickerItem(symbol, quote) {
+            const cleanSym = symbol.replace('^', 'IDX_');
+            
+            const updateEl = (dupSuffix) => {
+                const priceEl = document.getElementById(`tick-price-${cleanSym}-${dupSuffix}`);
+                const changeEl = document.getElementById(`tick-change-${cleanSym}-${dupSuffix}`);
+                if (!priceEl || !changeEl) return;
+
+                let formattedPrice = quote.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                priceEl.innerText = formattedPrice;
+
+                const isUp = quote.changePercent >= 0;
+                const sign = isUp ? '+' : '';
+                changeEl.innerHTML = `
+                    <i class="fa-solid fa-arrow-trend-${isUp ? 'up' : 'down'}"></i> 
+                    ${sign}${quote.changePercent.toFixed(2)}%
+                `;
+                changeEl.className = `ticker-change ${isUp ? 'pnl-up' : 'pnl-down'}`;
+            };
+
+            updateEl('first');
+            updateEl('second');
+        }
+
+        function onTickerItemClick(symbol) {
+            const selectEl = document.getElementById("graph-symbol-select");
+            if (selectEl) {
+                let optionExists = Array.from(selectEl.options).some(opt => opt.value === symbol);
+                if (!optionExists) {
+                    const opt = document.createElement("option");
+                    opt.value = symbol;
+                    opt.innerText = `${symbol} (Index)`;
+                    selectEl.appendChild(opt);
+                }
+                selectEl.value = symbol;
+                activeGraphSymbol = symbol;
+                updateGraph();
+                
+                // Scroll page smoothly to the graph component
+                const graphEl = document.querySelector(".graph-panel");
+                if (graphEl) {
+                    graphEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
     </script>
 </body>

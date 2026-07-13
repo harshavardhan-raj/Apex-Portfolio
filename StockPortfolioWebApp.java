@@ -31,6 +31,245 @@ public class StockPortfolioWebApp {
         }
     }
 
+    // Generic Cache Entry
+    static class CacheEntry<T> {
+        final T data;
+        final long expiresAt;
+
+        CacheEntry(T data, long ttlMillis) {
+            this.data = data;
+            this.expiresAt = System.currentTimeMillis() + ttlMillis;
+        }
+
+        boolean isExpired() {
+            return System.currentTimeMillis() > expiresAt;
+        }
+    }
+
+    // Cache instances
+    private static final Map<String, CacheEntry<String>> quoteCache = new ConcurrentHashMap<>();
+    private static final Map<String, CacheEntry<String>> profileCache = new ConcurrentHashMap<>();
+    private static final Map<String, CacheEntry<String>> historyCache = new ConcurrentHashMap<>();
+
+    // Helper: generic URL content fetcher
+    private static String fetchUrlContent(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                return response.toString();
+            }
+        } else {
+            throw new IOException("HTTP error code: " + responseCode);
+        }
+    }
+
+    private static String getCachedQuote(String symbol) {
+        CacheEntry<String> entry = quoteCache.get(symbol);
+        if (entry != null && !entry.isExpired()) {
+            return entry.data;
+        }
+        return null;
+    }
+
+    // Dynamic Symbol Normalization
+    private static String normalizeSymbol(String symbol) {
+        if (symbol == null) return "";
+        String normalized = symbol.toUpperCase().trim();
+        if (normalized.isEmpty()) return "";
+        if (normalized.contains(".")) {
+            return normalized;
+        }
+
+        // Fast cache check
+        String cached = getCachedQuote(normalized);
+        if (cached != null) {
+            return normalized;
+        }
+
+        // Try querying Finnhub to see if it's a valid US ticker
+        try {
+            String finnhubResult = fetchQuoteFromFinnhub(normalized);
+            double price = extractJsonDouble(finnhubResult, "\"currentPrice\":");
+            if (price > 0.0) {
+                return normalized; // US ticker
+            }
+        } catch (Exception ignored) {}
+
+        // Fallback checks for Indian suffixes: try .NS first (NSE)
+        try {
+            String urlString = "https://query1.finance.yahoo.com/v8/finance/chart/" + URLEncoder.encode(normalized + ".NS", StandardCharsets.UTF_8) + "?range=1d&interval=1d";
+            fetchUrlContent(urlString);
+            return normalized + ".NS";
+        } catch (Exception e1) {
+            // Try .BO next (BSE)
+            try {
+                String urlString = "https://query1.finance.yahoo.com/v8/finance/chart/" + URLEncoder.encode(normalized + ".BO", StandardCharsets.UTF_8) + "?range=1d&interval=1d";
+                fetchUrlContent(urlString);
+                return normalized + ".BO";
+            } catch (Exception e2) {
+                // If all fails, keep the original symbol
+                return normalized;
+            }
+        }
+    }
+
+    private static String fetchQuote(String symbol) throws IOException {
+        String normalized = symbol.toUpperCase().trim();
+        if (normalized.contains(".")) {
+            return fetchQuoteFromYahoo(normalized);
+        }
+
+        // Route plain symbols to Finnhub first, fall back to Yahoo Finance
+        try {
+            String finnhubResult = fetchQuoteFromFinnhub(normalized);
+            double price = extractJsonDouble(finnhubResult, "\"currentPrice\":");
+            if (price > 0.0) {
+                return finnhubResult;
+            }
+        } catch (Exception ignored) {}
+
+        // Try Yahoo Finance .NS
+        try {
+            return fetchQuoteFromYahoo(normalized + ".NS");
+        } catch (Exception e1) {
+            // Try Yahoo Finance .BO
+            try {
+                return fetchQuoteFromYahoo(normalized + ".BO");
+            } catch (Exception e2) {
+                // Try Yahoo Finance plain
+                try {
+                    return fetchQuoteFromYahoo(normalized);
+                } catch (Exception e3) {
+                    throw new IOException("Symbol not found on any source: " + symbol);
+                }
+            }
+        }
+    }
+
+    private static String fetchQuoteFromFinnhub(String symbol) throws IOException {
+        String urlString = API_URL + symbol + "&token=" + API_KEY;
+        String rawJson = fetchUrlContent(urlString);
+
+        double current = extractJsonDouble(rawJson, "\"c\":");
+        double change = extractJsonDouble(rawJson, "\"d\":");
+        double changePercent = extractJsonDouble(rawJson, "\"dp\":");
+        double high = extractJsonDouble(rawJson, "\"h\":");
+        double low = extractJsonDouble(rawJson, "\"l\":");
+        double open = extractJsonDouble(rawJson, "\"o\":");
+        double prevClose = extractJsonDouble(rawJson, "\"pc\":");
+
+        return String.format(Locale.US,
+            "{\"symbol\":\"%s\",\"currentPrice\":%.4f,\"change\":%.4f,\"changePercent\":%.4f,\"high\":%.4f,\"low\":%.4f,\"open\":%.4f,\"prevClose\":%.4f}",
+            symbol, current, change, changePercent, high, low, open, prevClose
+        );
+    }
+
+    private static String fetchQuoteFromYahoo(String symbol) throws IOException {
+        String urlString = "https://query1.finance.yahoo.com/v8/finance/chart/" + URLEncoder.encode(symbol, StandardCharsets.UTF_8) + "?range=1d&interval=1d";
+        String rawJson = fetchUrlContent(urlString);
+
+        double current = extractJsonDouble(rawJson, "\"regularMarketPrice\":");
+        double prevClose = extractJsonDouble(rawJson, "\"chartPreviousClose\":");
+        double high = extractJsonDouble(rawJson, "\"regularMarketDayHigh\":");
+        if (high == 0.0) high = extractJsonDouble(rawJson, "\"high\":");
+        double low = extractJsonDouble(rawJson, "\"regularMarketDayLow\":");
+        if (low == 0.0) low = extractJsonDouble(rawJson, "\"low\":");
+        double open = extractJsonDouble(rawJson, "\"open\":");
+
+        double change = current - prevClose;
+        double changePercent = prevClose > 0 ? (change / prevClose) * 100 : 0.0;
+
+        return String.format(Locale.US,
+            "{\"symbol\":\"%s\",\"currentPrice\":%.4f,\"change\":%.4f,\"changePercent\":%.4f,\"high\":%.4f,\"low\":%.4f,\"open\":%.4f,\"prevClose\":%.4f}",
+            symbol, current, change, changePercent, high, low, open, prevClose
+        );
+    }
+
+    private static String fetchProfile(String symbol) throws IOException {
+        String normalized = symbol.toUpperCase().trim();
+        if (normalized.contains(".")) {
+            return fetchProfileFromYahoo(normalized);
+        }
+
+        try {
+            String finnhubResult = fetchProfileFromFinnhub(normalized);
+            if (finnhubResult != null && !finnhubResult.isEmpty() && !finnhubResult.equals("{}") && finnhubResult.contains("\"name\":")) {
+                return finnhubResult;
+            }
+        } catch (Exception ignored) {}
+
+        // Fallback to Yahoo Finance suffixes
+        try {
+            return fetchProfileFromYahoo(normalized + ".NS");
+        } catch (Exception e1) {
+            try {
+                return fetchProfileFromYahoo(normalized + ".BO");
+            } catch (Exception e2) {
+                try {
+                    return fetchProfileFromYahoo(normalized);
+                } catch (Exception e3) {
+                    throw new IOException("Profile not found for: " + symbol);
+                }
+            }
+        }
+    }
+
+    private static String fetchProfileFromFinnhub(String symbol) throws IOException {
+        String urlString = "https://finnhub.io/api/v1/stock/profile2?symbol=" + symbol + "&token=" + API_KEY;
+        return fetchUrlContent(urlString);
+    }
+
+    private static String fetchProfileFromYahoo(String symbol) throws IOException {
+        String urlString = "https://query1.finance.yahoo.com/v8/finance/chart/" + URLEncoder.encode(symbol, StandardCharsets.UTF_8) + "?range=1d&interval=1d";
+        String rawJson = fetchUrlContent(urlString);
+
+        String name = "";
+        int index = rawJson.indexOf("\"longName\":\"");
+        if (index != -1) {
+            int start = index + "\"longName\":\"".length();
+            int end = rawJson.indexOf("\"", start);
+            if (end != -1) {
+                name = rawJson.substring(start, end);
+            }
+        }
+        if (name.isEmpty()) {
+            index = rawJson.indexOf("\"shortName\":\"");
+            if (index != -1) {
+                int start = index + "\"shortName\":\"".length();
+                int end = rawJson.indexOf("\"", start);
+                if (end != -1) {
+                    name = rawJson.substring(start, end);
+                }
+            }
+        }
+        if (name.isEmpty()) {
+            name = symbol;
+        }
+
+        return String.format(Locale.US,
+            "{\"ticker\":\"%s\",\"name\":\"%s\",\"marketCapitalization\":0.0,\"logo\":\"\"}",
+            symbol, name
+        );
+    }
+
+    private static String fetchAndCacheQuote(String symbol) throws IOException {
+        String resultJson = fetchQuote(symbol);
+        quoteCache.put(symbol, new CacheEntry<>(resultJson, 30000)); // Cache for 30 seconds
+        return resultJson;
+    }
+
     public static void main(String[] args) throws IOException {
         // Load existing portfolio from disk
         loadPortfolio();
@@ -39,6 +278,7 @@ public class StockPortfolioWebApp {
 
         // UI Page Handler
         server.createContext("/", new HtmlHandler());
+        server.createContext("/button", new ButtonHtmlHandler());
 
         // API Handlers
         server.createContext("/api/portfolio", new GetPortfolioHandler());
@@ -47,6 +287,9 @@ public class StockPortfolioWebApp {
         server.createContext("/api/news", new NewsHandler());
         server.createContext("/api/quote", new QuoteHandler());
         server.createContext("/api/cash", new CashHandler());
+        server.createContext("/api/profile", new ProfileHandler());
+        server.createContext("/api/history", new HistoryHandler());
+        server.createContext("/api/ticker", new TickerHandler());
 
         server.setExecutor(null);
         server.start();
@@ -100,6 +343,28 @@ public class StockPortfolioWebApp {
         }
     }
 
+    // Serving the Button showcase page
+    static class ButtonHtmlHandler implements HttpHandler {
+        public void handle(HttpExchange exchange) throws IOException {
+            Path htmlPath = Paths.get("button.html");
+            if (!Files.exists(htmlPath)) {
+                String error = "<html><body><h2>button.html not found! Please make sure it exists.</h2></body></html>";
+                exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
+                exchange.sendResponseHeaders(404, error.length());
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(error.getBytes());
+                }
+                return;
+            }
+            byte[] html = Files.readAllBytes(htmlPath);
+            exchange.getResponseHeaders().add("Content-Type", "text/html; charset=utf-8");
+            exchange.sendResponseHeaders(200, html.length);
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(html);
+            }
+        }
+    }
+
     // GET /api/portfolio
     static class GetPortfolioHandler implements HttpHandler {
         public void handle(HttpExchange exchange) throws IOException {
@@ -127,12 +392,29 @@ public class StockPortfolioWebApp {
                 double profitOrLoss = marketValue - costBasis;
                 double profitOrLossPercentage = costBasis > 0 ? (profitOrLoss / costBasis) * 100 : 0;
 
+                // Dynamic company name retrieval
+                String companyName = pos.symbol;
+                try {
+                    String profCached = profileCache.get(pos.symbol) != null ? profileCache.get(pos.symbol).data : null;
+                    if (profCached == null) {
+                        profCached = fetchProfile(pos.symbol);
+                    }
+                    int nameIdx = profCached.indexOf("\"name\":\"");
+                    if (nameIdx != -1) {
+                        int nameStart = nameIdx + "\"name\":\"".length();
+                        int nameEnd = profCached.indexOf("\"", nameStart);
+                        if (nameEnd != -1) {
+                            companyName = profCached.substring(nameStart, nameEnd);
+                        }
+                    }
+                } catch (Exception ignored) {}
+
                 totalCost += costBasis;
                 totalValue += marketValue;
 
                 holdingsJson.append(String.format(Locale.US,
-                    "{\"symbol\":\"%s\",\"quantity\":%.4f,\"averageBuyPrice\":%.4f,\"currentPrice\":%.4f,\"costBasis\":%.4f,\"marketValue\":%.4f,\"profitOrLoss\":%.4f,\"profitOrLossPercentage\":%.4f}",
-                    pos.symbol, pos.quantity, pos.averageBuyPrice, currentPrice, costBasis, marketValue, profitOrLoss, profitOrLossPercentage
+                    "{\"symbol\":\"%s\",\"name\":\"%s\",\"quantity\":%.4f,\"averageBuyPrice\":%.4f,\"currentPrice\":%.4f,\"costBasis\":%.4f,\"marketValue\":%.4f,\"profitOrLoss\":%.4f,\"profitOrLossPercentage\":%.4f}",
+                    pos.symbol, companyName, pos.quantity, pos.averageBuyPrice, currentPrice, costBasis, marketValue, profitOrLoss, profitOrLossPercentage
                 ));
 
                 if (i < size - 1) {
@@ -172,6 +454,7 @@ public class StockPortfolioWebApp {
                     return;
                 }
                 symbol = symbol.trim().toUpperCase();
+                symbol = normalizeSymbol(symbol);
 
                 double quantity = Double.parseDouble(params.get("quantity"));
                 if (quantity <= 0) {
@@ -250,6 +533,7 @@ public class StockPortfolioWebApp {
                     return;
                 }
                 symbol = symbol.trim().toUpperCase();
+                symbol = normalizeSymbol(symbol);
 
                 Position pos = portfolio.get(symbol);
                 if (pos == null) {
@@ -365,41 +649,16 @@ public class StockPortfolioWebApp {
                 return;
             }
             symbol = symbol.trim().toUpperCase();
+            symbol = normalizeSymbol(symbol);
 
             try {
-                URL url = new URL(API_URL + symbol + "&token=" + API_KEY);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 200) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-                        StringBuilder rawJson = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            rawJson.append(line);
-                        }
-                        String json = rawJson.toString();
-
-                        double current = extractJsonDouble(json, "\"c\":");
-                        double change = extractJsonDouble(json, "\"d\":");
-                        double changePercent = extractJsonDouble(json, "\"dp\":");
-                        double high = extractJsonDouble(json, "\"h\":");
-                        double low = extractJsonDouble(json, "\"l\":");
-                        double open = extractJsonDouble(json, "\"o\":");
-                        double prevClose = extractJsonDouble(json, "\"pc\":");
-
-                        String resultJson = String.format(Locale.US,
-                            "{\"symbol\":\"%s\",\"currentPrice\":%.4f,\"change\":%.4f,\"changePercent\":%.4f,\"high\":%.4f,\"low\":%.4f,\"open\":%.4f,\"prevClose\":%.4f}",
-                            symbol, current, change, changePercent, high, low, open, prevClose
-                        );
-                        sendJsonResponse(exchange, 200, resultJson);
-                    }
-                } else {
-                    sendJsonResponse(exchange, responseCode, "{\"error\": \"Error fetching quote from provider\"}");
+                String cached = getCachedQuote(symbol);
+                if (cached != null) {
+                    sendJsonResponse(exchange, 200, cached);
+                    return;
                 }
+                String resultJson = fetchAndCacheQuote(symbol);
+                sendJsonResponse(exchange, 200, resultJson);
             } catch (Exception e) {
                 sendJsonResponse(exchange, 500, "{\"error\": \"Exception fetching quote: " + e.getMessage() + "\"}");
             }
@@ -409,17 +668,255 @@ public class StockPortfolioWebApp {
     // Helper: Fetch current stock price from Finnhub
     private static double getStockPrice(String symbol) {
         try {
-            URL url = new URL(API_URL + symbol + "&token=" + API_KEY);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout(4000);
-            conn.setReadTimeout(4000);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
-                String response = reader.readLine();
-                return extractJsonDouble(response, "\"c\":");
+            String cached = getCachedQuote(symbol);
+            if (cached != null) {
+                return extractJsonDouble(cached, "\"currentPrice\":");
             }
+            String fetched = fetchAndCacheQuote(symbol);
+            return extractJsonDouble(fetched, "\"currentPrice\":");
         } catch (Exception e) {
             return 0.0;
+        }
+    }
+
+    // GET /api/profile?symbol=XYZ
+    static class ProfileHandler implements HttpHandler {
+        public void handle(HttpExchange exchange) throws IOException {
+            if (handleOptions(exchange)) return;
+
+            if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendJsonResponse(exchange, 405, "{\"error\": \"Method not allowed\"}");
+                return;
+            }
+
+            Map<String, String> queryParams = parseQueryString(exchange.getRequestURI().getQuery());
+            String symbol = queryParams.get("symbol");
+
+            if (symbol == null || symbol.trim().isEmpty()) {
+                sendJsonResponse(exchange, 400, "{\"error\": \"Symbol is required\"}");
+                return;
+            }
+            symbol = symbol.trim().toUpperCase();
+            symbol = normalizeSymbol(symbol);
+
+            try {
+                CacheEntry<String> entry = profileCache.get(symbol);
+                if (entry != null && !entry.isExpired()) {
+                    sendJsonResponse(exchange, 200, entry.data);
+                    return;
+                }
+
+                String rawJson = fetchProfile(symbol);
+
+                // Cache profile for 24 hours (24 * 60 * 60 * 1000 ms)
+                profileCache.put(symbol, new CacheEntry<>(rawJson, 24L * 60 * 60 * 1000));
+                sendJsonResponse(exchange, 200, rawJson);
+            } catch (Exception e) {
+                sendJsonResponse(exchange, 500, "{\"error\": \"Exception fetching profile: " + e.getMessage() + "\"}");
+            }
+        }
+    }
+
+    // GET /api/history?symbol=XYZ&range=1M
+    static class HistoryHandler implements HttpHandler {
+        public void handle(HttpExchange exchange) throws IOException {
+            if (handleOptions(exchange)) return;
+
+            if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendJsonResponse(exchange, 405, "{\"error\": \"Method not allowed\"}");
+                return;
+            }
+
+            Map<String, String> queryParams = parseQueryString(exchange.getRequestURI().getQuery());
+            String symbol = queryParams.get("symbol");
+            String range = queryParams.get("range"); // 1D, 1W, 1M, 6M, 1Y, 5Y, MAX
+
+            if (symbol == null || symbol.trim().isEmpty()) {
+                sendJsonResponse(exchange, 400, "{\"error\": \"Symbol is required\"}");
+                return;
+            }
+            symbol = symbol.trim().toUpperCase();
+            symbol = normalizeSymbol(symbol);
+
+            if (range == null || range.trim().isEmpty()) {
+                range = "1M";
+            }
+            range = range.trim().toUpperCase();
+
+            try {
+                String cacheKey = symbol + "_" + range;
+                CacheEntry<String> entry = historyCache.get(cacheKey);
+                if (entry != null && !entry.isExpired()) {
+                    sendJsonResponse(exchange, 200, entry.data);
+                    return;
+                }
+
+                String yfRange;
+                String yfInterval;
+                long ttl;
+
+                switch (range) {
+                    case "1D":
+                        yfRange = "1d";
+                        yfInterval = "15m";
+                        ttl = 5 * 60 * 1000; // 5 mins cache
+                        break;
+                    case "1W":
+                        yfRange = "5d";
+                        yfInterval = "30m";
+                        ttl = 30 * 60 * 1000; // 30 mins cache
+                        break;
+                    case "1M":
+                        yfRange = "1mo";
+                        yfInterval = "1d";
+                        ttl = 1 * 3600 * 1000; // 1 hour cache
+                        break;
+                    case "6M":
+                        yfRange = "6mo";
+                        yfInterval = "1d";
+                        ttl = 2 * 3600 * 1000; // 2 hours cache
+                        break;
+                    case "1Y":
+                        yfRange = "1y";
+                        yfInterval = "1d";
+                        ttl = 4 * 3600 * 1000; // 4 hours cache
+                        break;
+                    case "5Y":
+                        yfRange = "5y";
+                        yfInterval = "1wk";
+                        ttl = 12 * 3600 * 1000; // 12 hours cache
+                        break;
+                    case "MAX":
+                    default:
+                        yfRange = "max";
+                        yfInterval = "1mo";
+                        ttl = 24L * 3600 * 1000; // 24 hours cache
+                        break;
+                }
+
+                String urlString = "https://query1.finance.yahoo.com/v8/finance/chart/" + URLEncoder.encode(symbol, StandardCharsets.UTF_8) +
+                                   "?range=" + yfRange +
+                                   "&interval=" + yfInterval;
+                String rawJson = fetchUrlContent(urlString);
+
+                // Convert Yahoo Finance JSON to Finnhub compatible candle format
+                List<Double> t = extractJsonArray(rawJson, "\"timestamp\":");
+                List<Double> o = extractJsonArray(rawJson, "\"open\":");
+                List<Double> h = extractJsonArray(rawJson, "\"high\":");
+                List<Double> l = extractJsonArray(rawJson, "\"low\":");
+                List<Double> c = extractJsonArray(rawJson, "\"close\":");
+                List<Double> v = extractJsonArray(rawJson, "\"volume\":");
+
+                int minSize = t.size();
+                minSize = Math.min(minSize, o.size());
+                minSize = Math.min(minSize, h.size());
+                minSize = Math.min(minSize, l.size());
+                minSize = Math.min(minSize, c.size());
+                minSize = Math.min(minSize, v.size());
+
+                StringBuilder sbC = new StringBuilder("[");
+                StringBuilder sbH = new StringBuilder("[");
+                StringBuilder sbL = new StringBuilder("[");
+                StringBuilder sbO = new StringBuilder("[");
+                StringBuilder sbT = new StringBuilder("[");
+                StringBuilder sbV = new StringBuilder("[");
+
+                int validCount = 0;
+                for (int i = 0; i < minSize; i++) {
+                    Double closeVal = c.get(i);
+                    Double openVal = o.get(i);
+                    Double highVal = h.get(i);
+                    Double lowVal = l.get(i);
+                    Double volVal = v.get(i);
+                    Double timeVal = t.get(i);
+
+                    if (closeVal == null || openVal == null || highVal == null || lowVal == null || volVal == null || timeVal == null) {
+                        continue;
+                    }
+
+                    if (validCount > 0) {
+                        sbC.append(",");
+                        sbH.append(",");
+                        sbL.append(",");
+                        sbO.append(",");
+                        sbT.append(",");
+                        sbV.append(",");
+                    }
+
+                    sbC.append(String.format(Locale.US, "%.4f", closeVal));
+                    sbH.append(String.format(Locale.US, "%.4f", highVal));
+                    sbL.append(String.format(Locale.US, "%.4f", lowVal));
+                    sbO.append(String.format(Locale.US, "%.4f", openVal));
+                    sbT.append(String.format(Locale.US, "%d", timeVal.longValue()));
+                    sbV.append(String.format(Locale.US, "%d", volVal.longValue()));
+
+                    validCount++;
+                }
+
+                sbC.append("]");
+                sbH.append("]");
+                sbL.append("]");
+                sbO.append("]");
+                sbT.append("]");
+                sbV.append("]");
+
+                String status = validCount > 0 ? "ok" : "no_data";
+                String formattedJson = String.format(Locale.US,
+                    "{\"c\":%s,\"h\":%s,\"l\":%s,\"o\":%s,\"s\":\"%s\",\"t\":%s,\"v\":%s}",
+                    sbC.toString(), sbH.toString(), sbL.toString(), sbO.toString(), status, sbT.toString(), sbV.toString()
+                );
+
+                historyCache.put(cacheKey, new CacheEntry<>(formattedJson, ttl));
+                sendJsonResponse(exchange, 200, formattedJson);
+            } catch (Exception e) {
+                sendJsonResponse(exchange, 500, "{\"error\": \"Exception fetching history: " + e.getMessage() + "\"}");
+            }
+        }
+    }
+
+    // GET /api/ticker?symbols=^GSPC,^NSEI,...
+    static class TickerHandler implements HttpHandler {
+        public void handle(HttpExchange exchange) throws IOException {
+            if (handleOptions(exchange)) return;
+
+            if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendJsonResponse(exchange, 405, "{\"error\": \"Method not allowed\"}");
+                return;
+            }
+
+            Map<String, String> queryParams = parseQueryString(exchange.getRequestURI().getQuery());
+            String symbolsStr = queryParams.get("symbols");
+            if (symbolsStr == null || symbolsStr.trim().isEmpty()) {
+                symbolsStr = "^NSEI,^BSESN,^NSEBANK,^GSPC,^DJI,^IXIC,^FTSE,^N225";
+            }
+
+            String[] symbols = symbolsStr.split(",");
+            StringBuilder json = new StringBuilder("[");
+
+            for (int i = 0; i < symbols.length; i++) {
+                String sym = symbols[i].trim().toUpperCase();
+                if (sym.isEmpty()) continue;
+
+                try {
+                    String cached = getCachedQuote(sym);
+                    if (cached == null) {
+                        cached = fetchAndCacheQuote(sym);
+                    }
+                    json.append(cached);
+                } catch (Exception e) {
+                    json.append(String.format(Locale.US,
+                        "{\"symbol\":\"%s\",\"currentPrice\":0.0,\"change\":0.0,\"changePercent\":0.0,\"high\":0.0,\"low\":0.0,\"open\":0.0,\"prevClose\":0.0}",
+                        sym
+                    ));
+                }
+
+                if (i < symbols.length - 1) {
+                    json.append(",");
+                }
+            }
+            json.append("]");
+
+            sendJsonResponse(exchange, 200, json.toString());
         }
     }
 
@@ -441,6 +938,33 @@ public class StockPortfolioWebApp {
         } catch (Exception e) {
             return 0.0;
         }
+    }
+
+    // Helper: Safely extract arrays from simple JSON
+    private static List<Double> extractJsonArray(String json, String key) {
+        List<Double> list = new ArrayList<>();
+        int index = json.indexOf(key);
+        if (index == -1) return list;
+        int start = json.indexOf("[", index + key.length());
+        if (start == -1) return list;
+        int end = json.indexOf("]", start);
+        if (end == -1) return list;
+        String content = json.substring(start + 1, end).trim();
+        if (content.isEmpty()) return list;
+        String[] tokens = content.split(",");
+        for (String t : tokens) {
+            try {
+                String tokenVal = t.trim();
+                if (tokenVal.equals("null")) {
+                    list.add(null);
+                } else {
+                    list.add(Double.parseDouble(tokenVal));
+                }
+            } catch (Exception e) {
+                list.add(null);
+            }
+        }
+        return list;
     }
 
     // Helper: Parse request body (JSON or Form URL encoded)

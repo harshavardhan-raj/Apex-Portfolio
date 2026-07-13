@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Gravity Buy Button Showcase</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Theme: Midnight Violet & Electric Cyan */
+            --bg-color: #04040c;
+            --nebula-1: rgba(139, 92, 246, 0.15);
+            --nebula-2: rgba(6, 182, 212, 0.12);
+            --glow-color: #06b6d4;
+            --accent-color: #8b5cf6;
+            --btn-bg: rgba(10, 10, 25, 0.6);
+            --btn-border: rgba(139, 92, 246, 0.25);
+            --btn-border-hover: rgba(6, 182, 212, 0.5);
+            --text-color: #ffffff;
+            --text-glow: 0 0 10px rgba(6, 182, 212, 0.6), 0 0 20px rgba(139, 92, 246, 0.4);
+            --shadow-glow: rgba(6, 182, 212, 0.4);
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .theme-supernova {
+            --nebula-1: rgba(239, 68, 68, 0.15);
+            --nebula-2: rgba(245, 158, 11, 0.12);
+            --glow-color: #f59e0b;
+            --accent-color: #ef4444;
+            --btn-border: rgba(239, 68, 68, 0.3);
+            --btn-border-hover: rgba(245, 158, 11, 0.6);
+            --text-glow: 0 0 10px rgba(245, 158, 11, 0.6), 0 0 20px rgba(239, 68, 68, 0.4);
+            --shadow-glow: rgba(245, 158, 11, 0.45);
+        }
+
+        .theme-aurora {
+            --nebula-1: rgba(16, 185, 129, 0.15);
+            --nebula-2: rgba(6, 182, 212, 0.12);
+            --glow-color: #10b981;
+            --accent-color: #06b6d4;
+            --btn-border: rgba(16, 185, 129, 0.3);
+            --btn-border-hover: rgba(6, 182, 212, 0.6);
+            --text-glow: 0 0 10px rgba(16, 185, 129, 0.6), 0 0 20px rgba(6, 182, 212, 0.4);
+            --shadow-glow: rgba(16, 185, 129, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+            user-select: none;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.12) rgba(13, 18, 30, 0.3);
+        }
+
+        /* --- CUSTOM ELEGANT SCROLLBARS --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(13, 18, 30, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color, #8b5cf6);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #e2e8f0;
+            font-family: var(--font-body);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Ambient Space Background */
+        .space-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 30% 30%, var(--nebula-1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, var(--nebula-2) 0%, transparent 50%);
+            transition: background 1s ease;
+        }
+
+        .space-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Layout Structure */
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .showcase-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 100%;
+        }
+
+        .panel-area {
+            width: 420px;
+            height: 100%;
+            background: rgba(8, 8, 16, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            overflow-y: auto;
+            z-index: 20;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Glassmorphic Panel Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, #ffffff 30%, var(--glow-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--glow-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Controls */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #cbd5e1;
+        }
+
+        .label-val {
+            color: var(--glow-color);
+            font-family: var(--font-display);
+        }
+
+        /* Sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            transition: background 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid var(--glow-color);
+            box-shadow: 0 0 10px var(--glow-color);
+            cursor: pointer;
+            transition: transform 0.1s, background 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Theme Buttons */
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .btn-theme {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            padding: 10px 6px;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-theme.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--glow-color);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Toggle Switches */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--glow-color);
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Interactive Showcase Object */
+        .levitate-stage {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The Canvases for 3D Orbit */
+        .particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #canvas-back {
+            z-index: 1;
+        }
+
+        #canvas-front {
+            z-index: 3;
+        }
+
+        /* The Button Container for Floating */
+        .gravity-object-wrap {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* The Soft Glowing Levitation Shadow */
+        .glow-shadow {
+            position: absolute;
+            bottom: -50px;
+            width: 140px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, var(--shadow-glow) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 80%);
+            filter: blur(8px);
+            opacity: 0.7;
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: float-shadow 4s ease-in-out infinite;
+        }
+
+        /* Floating Button Element */
+        .anti-gravity-btn {
+            position: relative;
+            min-width: 200px;
+            height: 56px;
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            border-radius: 28px;
+            cursor: pointer;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                0 0 15px rgba(139, 92, 246, 0.05);
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: float-button 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            outline: none;
+        }
+
+        /* Inner Button text styling: Luminous/Embossed */
+        .btn-text {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--text-color);
+            text-shadow: var(--text-glow);
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Hover Interaction states */
+        .anti-gravity-btn:hover {
+            border-color: var(--btn-border-hover);
+            background: rgba(20, 20, 45, 0.8);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15),
+                0 0 30px rgba(6, 182, 212, 0.25);
+            transform: translateY(-16px);
+            animation-play-state: paused; /* Freeze floating oscillation while manual hover takes over */
+        }
+
+        /* Control shadow behavior on hover */
+        .anti-gravity-btn:hover ~ .glow-shadow {
+            transform: scale(0.65);
+            opacity: 0.35;
+            filter: blur(14px);
+            animation-play-state: paused;
+        }
+
+        /* Click Shockwave Expansion */
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--glow-color);
+            box-shadow: 0 0 20px var(--glow-color), inset 0 0 20px var(--glow-color);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .shockwave.trigger {
+            animation: ripple 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        /* Lock confirmation State */
+        .anti-gravity-btn.locked {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: #10b981;
+            box-shadow: 
+                0 0 35px rgba(16, 185, 129, 0.4),
+                inset 0 0 15px rgba(16, 185, 129, 0.2);
+            animation: none;
+            transform: scale(0.95);
+        }
+
+        .anti-gravity-btn.locked .btn-text {
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+        }
+
+        /* Code Copy Area */
+        .code-box {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 10px;
+            max-height: 180px;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            color: #a7f3d0;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--glow-color);
+        }
+
+        /* Navigation link */
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px 16px;
+            border-radius: 30px;
+            backdrop-filter: blur(8px);
+        }
+
+        .back-link:hover {
+            color: var(--glow-color);
+            border-color: var(--glow-color);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+        }
+
+        /* ANIMATION KEYFRAMES */
+        @keyframes float-button {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-8px) rotate(0.5deg);
+            }
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        @keyframes float-shadow {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+                filter: blur(8px);
+            }
+            50% {
+                transform: scale(0.85);
+                opacity: 0.45;
+                filter: blur(11px);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+                filter: blur(8px);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                width: 50px;
+                height: 50px;
+                opacity: 0.8;
+                border-width: 4px;
+            }
+            100% {
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+                border-width: 1px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        .panel-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .panel-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .panel-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        .panel-area::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Audio Indicator Badge */
+        .audio-status {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 11px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: none;
+            font-family: var(--font-display);
+        }
+
+        .audio-status.active {
+            color: var(--glow-color);
+            border-color: rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient backgrounds -->
+    <div class="space-bg" id="space-bg"></div>
+    <canvas class="space-stars" id="star-canvas"></canvas>
+
+    <!-- Navigation Back Link -->
+    <a href="/" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <!-- Container layout -->
+    <div class="container">
+        
+        <!-- Center Showcase Area -->
+        <div class="showcase-area">
+            
+            <!-- Float Stage containing overlays and button -->
+            <div class="levitate-stage" id="levitate-stage">
+                
+                <!-- 3D Orbit behind-canvas -->
+                <canvas class="particle-canvas" id="canvas-back"></canvas>
+                
+                <!-- Central Anti-Gravity wrapper -->
+                <div class="gravity-object-wrap">
+                    <button class="anti-gravity-btn" id="buy-btn">
+                        <span class="btn-text" id="btn-text">
+                            <i class="fa-solid fa-cube"></i> Buy Now
+                        </span>
+                    </button>
+                    <!-- Floating shadow under the button -->
+                    <div class="glow-shadow" id="glow-shadow"></div>
+                </div>
+                
+                <!-- 3D Orbit front-canvas -->
+                <canvas class="particle-canvas" id="canvas-front"></canvas>
+                
+                <!-- Shockwave Ripple -->
+                <div class="shockwave" id="shockwave"></div>
+            </div>
+
+            <!-- Audio Info -->
+            <div class="audio-status" id="audio-status">
+                <i class="fa-solid fa-volume-xmark"></i> Sound Engine Disabled (Interact to Enable)
+            </div>
+
+        </div>
+
+        <!-- Sidebar Control Panel -->
+        <div class="panel-area">
+            
+            <!-- Title -->
+            <div>
+                <h1>Gravity Engine</h1>
+                <p class="subtitle">Experience weightless interactions built on clean quantum-aesthetic logic.</p>
+            </div>
+
+            <!-- Parameters Card -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-sliders"></i> Quantum Settings
+                </div>
+                
+                <div class="control-group">
+                    <!-- Particle Count -->
+                    <div class="control-item">
+                        <div class="label-row">
+                            <span>Orbital Density</span>
+                            <span class="label-val" id="val-particles">50</span>
+                        </div>
+                        <input type="range" id="param-particles" min="10" max="150" value="50">
+                    </div>
+
+                    <!-- Orbit Radius -->
+                    <div class="control-item">
+                        <div class="label-row">
+                            <span>Orbit Boundary</span>
+                            <span class="label-val" id="val-radius">130px</span>
+                        </div>
+                        <input type="range" id="param-radius" min="80" max="180" value="130">
+                    </div>
+
+                    <!-- Speed Multiplier -->
+                    <div class="control-item">
+                        <div class="label-row">
+                            <span>Spin Velocity</span>
+                            <span class="label-val" id="val-speed">1.0x</span>
+                        </div>
+                        <input type="range" id="param-speed" min="0.2" max="3.0" step="0.1" value="1.0">
+                    </div>
+
+                    <!-- Gravity Strength -->
+                    <div class="control-item">
+                        <div class="label-row">
+                            <span>Gravity Drift</span>
+                            <span class="label-val" id="val-gravity">Normal</span>
+                        </div>
+                        <input type="range" id="param-gravity" min="0" max="2" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Style Selector Card -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Nebula Theme
+                </div>
+                <div class="theme-selector">
+                    <button class="btn-theme active" data-theme="nebula">Midnight</button>
+                    <button class="btn-theme" data-theme="supernova">Supernova</button>
+                    <button class="btn-theme" data-theme="aurora">Aurora</button>
+                </div>
+            </div>
+
+            <!-- Audio & Interactive Card -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-volume-high"></i> Audio Feedback
+                </div>
+                <div class="toggle-row">
+                    <span class="toggle-label">
+                        <i class="fa-solid fa-wave-square"></i> Audio Synth
+                    </span>
+                    <label class="switch">
+                        <input type="checkbox" id="param-audio" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Developer Snippet -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <i class="fa-solid fa-code"></i> Component Source
+                </div>
+                <div class="label-row" style="margin-bottom: 8px;">
+                    <span>CSS Stylesheet</span>
+                </div>
+                <div class="code-box" id="code-box">.anti-gravity-btn {
+  background: rgba(10, 10, 25, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: float-button 4s ease-in-out infinite;
+}
+
+.btn-text {
+  text-shadow: 0 0 10px #06b6d4;
+  letter-spacing: 0.2em;
+}
+
+.anti-gravity-btn:hover {
+  transform: translateY(-16px);
+  border-color: #06b6d4;
+}</div>
+                <button class="copy-btn" id="copy-btn">Copy CSS</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // DOM Elements
+        const buyBtn = document.getElementById('buy-btn');
+        const btnText = document.getElementById('btn-text');
+        const glowShadow = document.getElementById('glow-shadow');
+        const canvasBack = document.getElementById('canvas-back');
+        const canvasFront = document.getElementById('canvas-front');
+        const starCanvas = document.getElementById('star-canvas');
+        const shockwave = document.getElementById('shockwave');
+        const audioStatus = document.getElementById('audio-status');
+        
+        // Settings elements
+        const inputParticles = document.getElementById('param-particles');
+        const inputRadius = document.getElementById('param-radius');
+        const inputSpeed = document.getElementById('param-speed');
+        const inputGravity = document.getElementById('param-gravity');
+        const inputAudio = document.getElementById('param-audio');
+        
+        // Slider value display
+        const valParticles = document.getElementById('val-particles');
+        const valRadius = document.getElementById('val-radius');
+        const valSpeed = document.getElementById('val-speed');
+        const valGravity = document.getElementById('val-gravity');
+        
+        // Theme selector
+        const themeButtons = document.querySelectorAll('.btn-theme');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // Physics Configurations
+        let density = parseInt(inputParticles.value);
+        let maxRadius = parseInt(inputRadius.value);
+        let spinSpeed = parseFloat(inputSpeed.value);
+        let gravityPreset = parseInt(inputGravity.value); // 0: Weak, 1: Normal, 2: Strong
+        let soundEnabled = inputAudio.checked;
+        let isHovered = false;
+        let isLocked = false;
+        let activeTheme = 'nebula';
+
+        // Canvas Setup
+        let ctxBack = canvasBack.getContext('2d');
+        let ctxFront = canvasFront.getContext('2d');
+        let ctxStars = starCanvas.getContext('2d');
+
+        // Layout center coordinate relative to showcase stage
+        let centerX = 160;
+        let centerY = 160;
+
+        // Particle Collection
+        let particles = [];
+
+        // Audio Context (Lazy initialized on user interaction)
+        let audioCtx = null;
+        let hoverOsc = null;
+        let hoverGain = null;
+
+        // Code templates per theme
+        const cssTemplates = {
+            nebula: `.anti-gravity-btn {
+  background: rgba(10, 10, 25, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: float-button 4s ease-in-out infinite;
+}
+
+.btn-text {
+  text-shadow: 0 0 10px #06b6d4;
+  letter-spacing: 0.2em;
+}
+
+.anti-gravity-btn:hover {
+  transform: translateY(-16px);
+  border-color: #06b6d4;
+}`,
+            supernova: `.anti-gravity-btn {
+  background: rgba(15, 5, 5, 0.6);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: float-button 4s ease-in-out infinite;
+}
+
+.btn-text {
+  text-shadow: 0 0 10px #f59e0b;
+  letter-spacing: 0.2em;
+}
+
+.anti-gravity-btn:hover {
+  transform: translateY(-16px);
+  border-color: #f59e0b;
+}`,
+            aurora: `.anti-gravity-btn {
+  background: rgba(5, 15, 10, 0.6);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: float-button 4s ease-in-out infinite;
+}
+
+.btn-text {
+  text-shadow: 0 0 10px #10b981;
+  letter-spacing: 0.2em;
+}
+
+.anti-gravity-btn:hover {
+  transform: translateY(-16px);
+  border-color: #10b981;
+}`
+        };
+
+        // Resize Handlers
+        function resize() {
+            // Stage canvases
+            const rect = document.getElementById('levitate-stage').getBoundingClientRect();
+            canvasBack.width = rect.width;
+            canvasBack.height = rect.height;
+            canvasFront.width = rect.width;
+            canvasFront.height = rect.height;
+            centerX = rect.width / 2;
+            centerY = rect.height / 2;
+
+            // Background star canvas
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+            generateStars();
+        }
+
+        // --- BACKGROUND STAR FIELD ---
+        let stars = [];
+        function generateStars() {
+            stars = [];
+            const count = Math.floor((starCanvas.width * starCanvas.height) / 8000);
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * starCanvas.width,
+                    y: Math.random() * starCanvas.height,
+                    size: Math.random() * 1.5,
+                    brightness: Math.random(),
+                    speed: 0.05 + Math.random() * 0.08
+                });
+            }
+        }
+
+        function drawStars() {
+            ctxStars.clearRect(0, 0, starCanvas.width, starCanvas.height);
+            ctxStars.fillStyle = "#ffffff";
+            stars.forEach(s => {
+                ctxStars.globalAlpha = 0.2 + Math.abs(Math.sin(Date.now() * 0.001 * s.brightness)) * 0.8;
+                ctxStars.beginPath();
+                ctxStars.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctxStars.fill();
+
+                // Drift stars slowly downwards to simulate floating up
+                s.y += s.speed;
+                if (s.y > starCanvas.height) {
+                    s.y = 0;
+                    s.x = Math.random() * starCanvas.width;
+                }
+            });
+            ctxStars.globalAlpha = 1.0;
+        }
+
+        // --- WEB AUDIO API ENGINE ---
+        function initAudio() {
+            if (audioCtx) return;
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+                
+                // Set up hover synthesizer hum
+                hoverOsc = audioCtx.createOscillator();
+                hoverGain = audioCtx.createGain();
+
+                hoverOsc.type = 'triangle';
+                hoverOsc.frequency.setValueAtTime(55, audioCtx.currentTime); // Low A hum
+                
+                hoverGain.gain.setValueAtTime(0, audioCtx.currentTime); // Mute initially
+
+                hoverOsc.connect(hoverGain);
+                hoverGain.connect(audioCtx.destination);
+                hoverOsc.start();
+
+                audioStatus.classList.add('active');
+                audioStatus.innerHTML = '<i class="fa-solid fa-volume-high"></i> Audio Engine Active';
+            } catch (e) {
+                console.error("Failed to initialize Web Audio", e);
+            }
+        }
+
+        function updateHoverHum() {
+            if (!audioCtx || !soundEnabled) return;
+            
+            const targetVolume = isHovered && !isLocked ? 0.08 : 0;
+            const targetFreq = isHovered ? 85 : 55; // Pitch shifts up slightly on hover
+
+            hoverGain.gain.setTargetAtTime(targetVolume, audioCtx.currentTime, 0.15);
+            hoverOsc.frequency.setTargetAtTime(targetFreq, audioCtx.currentTime, 0.2);
+        }
+
+        function playClickSynth() {
+            if (!audioCtx || !soundEnabled) return;
+
+            // Stop hover hum volume instantly
+            hoverGain.gain.setValueAtTime(0, audioCtx.currentTime);
+
+            // 1. Burst sound (explosive decay)
+            const oscBurst = audioCtx.createOscillator();
+            const gainBurst = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+
+            oscBurst.type = 'sawtooth';
+            // Start high, sweep down rapidly
+            oscBurst.frequency.setValueAtTime(440, audioCtx.currentTime);
+            oscBurst.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.35);
+
+            gainBurst.gain.setValueAtTime(0.18, audioCtx.currentTime);
+            gainBurst.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.35);
+
+            oscBurst.connect(filter);
+            filter.connect(gainBurst);
+            gainBurst.connect(audioCtx.destination);
+
+            oscBurst.start();
+            oscBurst.stop(audioCtx.currentTime + 0.4);
+
+            // 2. Sparkle chords (locked confirmation chime)
+            // Play a major triad chord with high notes after 0.25 seconds
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (crystal chord)
+            
+            setTimeout(() => {
+                if (isLocked) {
+                    notes.forEach((freq, i) => {
+                        const oscChime = audioCtx.createOscillator();
+                        const gainChime = audioCtx.createGain();
+
+                        oscChime.type = 'sine';
+                        oscChime.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        
+                        // Sparkle offset to sound arpeggiated
+                        const delay = i * 0.04;
+                        gainChime.gain.setValueAtTime(0, audioCtx.currentTime);
+                        gainChime.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + delay + 0.05);
+                        gainChime.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.6);
+
+                        oscChime.connect(gainChime);
+                        gainChime.connect(audioCtx.destination);
+
+                        oscChime.start(audioCtx.currentTime);
+                        oscChime.stop(audioCtx.currentTime + delay + 0.7);
+                    });
+                }
+            }, 100);
+        }
+
+        // --- 3D PARTICLE ENGINE ---
+        class OrbitParticle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                // Spherical coordinate parameters
+                this.angle = Math.random() * Math.PI * 2;
+                
+                // Radial noise for variance
+                this.radiusNoise = 0.8 + Math.random() * 0.4;
+                
+                // Tilt orbits randomly (between -25 and +25 deg)
+                this.tilt = (Math.random() - 0.5) * 0.45;
+                
+                // Height offsets (scattered in y-axis)
+                this.yOffset = (Math.random() - 0.5) * 35;
+                
+                // Angular orbital speed
+                this.baseOrbitSpeed = (0.012 + Math.random() * 0.01) * (Math.random() > 0.5 ? 1 : -1);
+                
+                // Physical sizes
+                this.baseSize = 1.2 + Math.random() * 2.2;
+                this.colorIntensity = 0.4 + Math.random() * 0.6;
+                
+                // State of existence
+                this.state = 'orbit'; // 'orbit', 'burst'
+                
+                // Trail buffer for smooth motion graphics
+                this.trail = [];
+                this.maxTrail = 6 + Math.floor(Math.random() * 6);
+
+                // Burst physics variables
+                this.x = 0;
+                this.y = 0;
+                this.z = 0;
+                this.vx = 0;
+                this.vy = 0;
+                this.vz = 0;
+                this.burstLife = 0;
+                this.burstDecay = 0.92 + Math.random() * 0.04;
+            }
+
+            update(btnYOffset) {
+                if (this.state === 'orbit') {
+                    // Update orbital position
+                    let speedMult = spinSpeed;
+                    if (isHovered) {
+                        // Accelerate orbit on hover
+                        speedMult *= 1.8;
+                    }
+                    
+                    this.angle += this.baseOrbitSpeed * speedMult;
+
+                    // Normal Orbit Boundary calculation
+                    let currentRadius = maxRadius * this.radiusNoise;
+                    if (isHovered) {
+                        // Expand boundary boundary on hover
+                        currentRadius *= 1.25;
+                    }
+
+                    // 3D coordinates relative to button center
+                    // x, z define horizontal planar orbit. y defines vertical tilt.
+                    this.z = currentRadius * Math.sin(this.angle);
+                    this.x = currentRadius * Math.cos(this.angle);
+                    
+                    // We tilt the orbit plane slightly using Z value
+                    this.y = this.yOffset + (this.z * Math.sin(this.tilt)) + btnYOffset;
+
+                } else if (this.state === 'burst') {
+                    // Friction/deceleration
+                    this.vx *= this.burstDecay;
+                    this.vy *= this.burstDecay;
+                    this.vz *= this.burstDecay;
+
+                    // Apply coordinates update
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.z += this.vz;
+
+                    // Decay life
+                    this.burstLife -= 0.015;
+
+                    // If particle has cooled down, pull it back to orbit
+                    if (this.burstLife <= 0) {
+                        this.state = 'orbit';
+                        // Re-align angle so it transitions smoothly back to orbit
+                        this.angle = Math.atan2(this.z, this.x);
+                    }
+                }
+
+                // Manage trails
+                this.trail.push({ x: this.x, y: this.y, z: this.z });
+                if (this.trail.length > this.maxTrail) {
+                    this.trail.shift();
+                }
+            }
+
+            triggerBurst() {
+                this.state = 'burst';
+                this.burstLife = 0.6 + Math.random() * 0.6; // Lifetime multiplier
+
+                // Compute radial direction from center
+                const distance = Math.hypot(this.x, this.y);
+                const angle = Math.atan2(this.y, this.x) + (Math.random() - 0.5) * 0.3; // add a little drift
+                
+                // Exploding speed
+                const speed = 12 + Math.random() * 20;
+
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                // Explode z axis towards user too!
+                this.vz = (Math.random() - 0.3) * 15;
+            }
+
+            draw(ctx) {
+                // 3D Perspective Projection
+                // Faux-camera projection. Size and opacity increases as objects move closer to camera (positive Z)
+                const distanceFactor = (this.z + maxRadius * 2) / (maxRadius * 2); // Ranges roughly from 0.5 to 1.5
+                const projX = centerX + this.x;
+                const projY = centerY + this.y;
+                
+                const drawSize = Math.max(0.4, this.baseSize * distanceFactor);
+                let alpha = distanceFactor * 0.65;
+                if (this.state === 'burst') {
+                    alpha *= this.burstLife; // Fade out as it dies
+                }
+
+                // Theme color calculations
+                let pColor;
+                const opacityStr = Math.max(0, Math.min(1, alpha));
+                if (activeTheme === 'nebula') {
+                    pColor = `rgba(${this.z > 0 ? '6, 182, 212' : '139, 92, 246'}, ${opacityStr})`;
+                } else if (activeTheme === 'supernova') {
+                    pColor = `rgba(${this.z > 0 ? '245, 158, 11' : '239, 68, 68'}, ${opacityStr})`;
+                } else {
+                    pColor = `rgba(${this.z > 0 ? '6, 182, 212' : '16, 185, 129'}, ${opacityStr})`;
+                }
+
+                // Draw trails
+                if (this.trail.length > 1) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = pColor;
+                    ctx.lineWidth = drawSize * 0.5;
+                    ctx.lineCap = 'round';
+                    
+                    // project trail coordinates
+                    const startX = centerX + this.trail[0].x;
+                    const startY = centerY + this.trail[0].y;
+                    ctx.moveTo(startX, startY);
+                    
+                    for (let i = 1; i < this.trail.length; i++) {
+                        const ptX = centerX + this.trail[i].x;
+                        const ptY = centerY + this.trail[i].y;
+                        ctx.lineTo(ptX, ptY);
+                    }
+                    ctx.stroke();
+                }
+
+                // Draw main sparkle particle
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = pColor;
+                ctx.shadowBlur = this.state === 'burst' ? 8 : 4;
+                
+                ctx.beginPath();
+                ctx.arc(projX, projY, drawSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Clear shadow for next draw operations
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // Populate Particle Array
+        function syncParticleCount() {
+            if (particles.length < density) {
+                while (particles.length < density) {
+                    particles.push(new OrbitParticle());
+                }
+            } else if (particles.length > density) {
+                particles = particles.slice(0, density);
+            }
+        }
+
+        // --- BUTTON POSITION OSCILLATION ---
+        let baseButtonY = 0;
+        function getButtonOscillation() {
+            if (isLocked) return 0;
+            
+            let amplitude = 4; // Floating oscillation height
+            let frequency = 0.0015; // Speed of float cycle
+
+            if (isHovered) {
+                // When hovered, the button rises manually by -16px and floats in a micro jitter
+                return -16 + Math.sin(Date.now() * 0.005) * 1.5;
+            }
+
+            if (gravityPreset === 0) {
+                amplitude = 8; // Weak gravity = floats higher/freer
+                frequency = 0.0008;
+            } else if (gravityPreset === 2) {
+                amplitude = 1.5; // Strong gravity = heavy float
+                frequency = 0.0025;
+            }
+
+            return Math.sin(Date.now() * frequency) * amplitude;
+        }
+
+        // --- MAIN RENDERING LOOP ---
+        function tick() {
+            // Background elements
+            drawStars();
+
+            // Clear canvases
+            ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
+            ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
+
+            // Compute current floating Y offset of the button
+            const btnYOffset = getButtonOscillation();
+            
+            // Render the button float offset using transform if it's not hovered
+            // (When hovered, the CSS handles the transition smoothly)
+            if (!isHovered && !isLocked) {
+                buyBtn.style.transform = `translateY(${btnYOffset}px)`;
+                glowShadow.style.transform = `scale(${1 - (btnYOffset / 40)})`;
+                glowShadow.style.opacity = `${0.7 + (btnYOffset / 60)}`;
+            }
+
+            // Update and render particles
+            particles.forEach(p => {
+                p.update(btnYOffset);
+
+                // Split particles between back and front canvases based on Z depth
+                // Z > 0 is in front of the button; Z <= 0 is behind it
+                if (p.z <= 0) {
+                    p.draw(ctxBack);
+                } else {
+                    p.draw(ctxFront);
+                }
+            });
+
+            requestAnimationFrame(tick);
+        }
+
+        // --- EVENT HANDLERS & SIMULATION CONTROLS ---
+
+        // Button Interactions
+        buyBtn.addEventListener('mouseenter', () => {
+            isHovered = true;
+            initAudio();
+            updateHoverHum();
+        });
+
+        buyBtn.addEventListener('mouseleave', () => {
+            isHovered = false;
+            updateHoverHum();
+        });
+
+        buyBtn.addEventListener('click', () => {
+            if (isLocked) return;
+
+            initAudio();
+
+            // Trigger burst of particles
+            particles.forEach(p => p.triggerBurst());
+
+            // Play synthesized audio
+            playClickSynth();
+
+            // Trigger visual shockwave ring
+            shockwave.classList.remove('trigger');
+            void shockwave.offsetWidth; // Force CSS reflow
+            shockwave.classList.add('trigger');
+
+            // Lock button in Orbit Confirmation State
+            isLocked = true;
+            buyBtn.classList.add('locked');
+            btnText.innerHTML = '<i class="fa-solid fa-circle-check"></i> Orbit Locked';
+            
+            // Trigger feedback message in shadow
+            glowShadow.style.background = 'radial-gradient(ellipse, rgba(16, 185, 129, 0.7) 0%, rgba(16, 185, 129, 0.1) 50%, transparent 80%)';
+            glowShadow.style.transform = 'scale(1.2)';
+
+            // Reset back to normal after 3 seconds
+            setTimeout(() => {
+                isLocked = false;
+                buyBtn.classList.remove('locked');
+                btnText.innerHTML = '<i class="fa-solid fa-cube"></i> Buy Now';
+                glowShadow.style.background = ''; // reset to CSS variable
+                updateHoverHum();
+            }, 3000);
+        });
+
+        // Config Controls
+        inputParticles.addEventListener('input', (e) => {
+            density = parseInt(e.target.value);
+            valParticles.textContent = density;
+            syncParticleCount();
+        });
+
+        inputRadius.addEventListener('input', (e) => {
+            maxRadius = parseInt(e.target.value);
+            valRadius.textContent = maxRadius + 'px';
+        });
+
+        inputSpeed.addEventListener('input', (e) => {
+            spinSpeed = parseFloat(e.target.value);
+            valSpeed.textContent = spinSpeed.toFixed(1) + 'x';
+        });
+
+        inputGravity.addEventListener('input', (e) => {
+            gravityPreset = parseInt(e.target.value);
+            const presets = ['Weak', 'Normal', 'Strong'];
+            valGravity.textContent = presets[gravityPreset];
+        });
+
+        inputAudio.addEventListener('change', (e) => {
+            soundEnabled = e.target.checked;
+            if (!soundEnabled && hoverGain) {
+                hoverGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            } else {
+                initAudio();
+                updateHoverHum();
+            }
+        });
+
+        // Theme Selectors
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                themeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Remove previous themes
+                document.body.className = '';
+                
+                activeTheme = btn.dataset.theme;
+                if (activeTheme === 'supernova') {
+                    document.body.classList.add('theme-supernova');
+                } else if (activeTheme === 'aurora') {
+                    document.body.classList.add('theme-aurora');
+                }
+
+                // Update Code Box content
+                document.getElementById('code-box').textContent = cssTemplates[activeTheme];
+            });
+        });
+
+        // Copy Code Snippet
+        copyBtn.addEventListener('click', () => {
+            const code = document.getElementById('code-box').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                copyBtn.textContent = 'Copied!';
+                copyBtn.style.color = '#10b981';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy CSS';
+                    copyBtn.style.color = '';
+                }, 2000);
+            });
+        });
+
+        // Initialize Stage
+        window.addEventListener('resize', resize);
+        document.addEventListener('DOMContentLoaded', () => {
+            resize();
+            syncParticleCount();
+            // Start main ticking
+            requestAnimationFrame(tick);
+        });
+
+        // Trigger Audio initialization on body click
+        document.body.addEventListener('click', () => {
+            initAudio();
+        }, { once: true });
+
+    </script>
+</body>
+</html>
