@@ -116,6 +116,9 @@ async function fetchQuoteFromYahoo(symbol) {
     });
     const raw = await resp.json();
     const result = raw?.chart?.result?.[0];
+    if (!result) {
+        throw new Error(`Symbol not found: ${symbol}`);
+    }
     const meta = result?.meta;
     const currentPrice = meta?.regularMarketPrice || 0;
     const prevClose = meta?.chartPreviousClose || 0;
@@ -172,6 +175,9 @@ async function fetchProfileFromYahoo(symbol) {
     });
     const raw = await resp.json();
     const result = raw?.chart?.result?.[0];
+    if (!result) {
+        throw new Error(`Symbol not found: ${symbol}`);
+    }
     const meta = result?.meta;
     const name = meta?.longName || meta?.shortName || symbol;
     return {
