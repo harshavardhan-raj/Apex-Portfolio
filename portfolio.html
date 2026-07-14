@@ -1630,6 +1630,113 @@
             background: rgba(95, 90, 246, 0.25) !important;
             color: var(--accent) !important;
         }
+
+        /* --- COMPREHENSIVE RESPONSIVE DESIGN (MOBILE & TABLET) --- */
+        
+        /* Force holdings table to be readable on mobile without text squishing */
+        table {
+            min-width: 720px; /* Force scrollbar inside .holdings-table-container on small screens */
+        }
+        
+        .history-chart-wrapper {
+            height: 350px;
+        }
+
+        /* Responsive overrides */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 20px 16px !important;
+            }
+            
+            header {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 16px !important;
+                text-align: center !important;
+                padding-bottom: 20px !important;
+            }
+
+            .logo-section {
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+
+            .header-actions {
+                width: 100% !important;
+                justify-content: center !important;
+                gap: 12px !important;
+                flex-wrap: wrap !important;
+            }
+
+            .header-orbit-area {
+                margin: 8px 0 0 0 !important;
+                width: 100% !important;
+                display: flex !important;
+                justify-content: center !important;
+            }
+
+            .summary-ribbon {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+
+            .summary-card {
+                padding: 16px !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .history-chart-wrapper {
+                height: 240px !important;
+            }
+
+            /* Responsive keyframes override for header orbiting coins on narrow viewports */
+            @keyframes header-orbit-gold {
+                from { transform: rotate(0deg) translateX(45px) rotate(0deg); }
+                to { transform: rotate(360deg) translateX(45px) rotate(-360deg); }
+            }
+            @keyframes header-orbit-teal {
+                from { transform: rotate(0deg) translateX(45px) rotate(0deg); }
+                to { transform: rotate(360deg) translateX(45px) rotate(-360deg); }
+            }
+            @keyframes header-orbit-purple {
+                from { transform: rotate(0deg) translateX(45px) rotate(0deg); }
+                to { transform: rotate(360deg) translateX(45px) rotate(-360deg); }
+            }
+
+            /* Historical Stock chart header layout */
+            .graph-panel > div:first-child {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 14px !important;
+            }
+
+            .graph-panel > div:first-child > div:last-child {
+                width: 100% !important;
+                justify-content: space-between !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 16px 12px !important;
+            }
+
+            .summary-ribbon {
+                grid-template-columns: 1fr !important;
+            }
+
+            .panel-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 6px !important;
+            }
+
+            .modal {
+                width: 92% !important;
+                margin: 0 auto !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1786,7 +1893,7 @@
             </div>
 
             <!-- Chart Canvas wrapper -->
-            <div style="position: relative; width: 100%; height: 350px;">
+            <div class="history-chart-wrapper" style="position: relative; width: 100%;">
                 <canvas id="historyChart"></canvas>
                 <div id="graph-loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(13, 18, 30, 0.7); backdrop-filter: blur(4px); border-radius: 8px; z-index: 10;">
                     <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 24px; color: var(--accent); margin-bottom: 8px;"></i>
